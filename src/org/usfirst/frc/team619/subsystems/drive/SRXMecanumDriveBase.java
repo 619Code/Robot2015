@@ -1,6 +1,7 @@
 
 package org.usfirst.frc.team619.subsystems.drive;
 
+import org.usfirst.frc.team619.hardware.DigitalEncoder;
 import org.usfirst.frc.team619.hardware.TalonCan;
 /**
  * Mecanum drive base that is based off the code for the tank drive base, just has extra motors and servos added
@@ -9,6 +10,7 @@ import org.usfirst.frc.team619.hardware.TalonCan;
 public class SRXMecanumDriveBase{
     
 	protected TalonCan topLeftmotor, topRightmotor, bottomLeftmotor, bottomRightmotor;
+	protected DigitalEncoder tL, tR, bL, bR;
     
     public SRXMecanumDriveBase(int topLeftmotorChannel, int topRightmotorChannel, int bottomLeftmotorChannel, int bottomRightmotorChannel){
         topLeftmotor = new TalonCan(topLeftmotorChannel);
@@ -22,6 +24,21 @@ public class SRXMecanumDriveBase{
     	this.topRightmotor = topRightmotor;
     	this.bottomLeftmotor = bottomLeftmotor;
     	this.bottomRightmotor = bottomRightmotor;
+    }
+    
+    public SRXMecanumDriveBase(TalonCan topLeftmotor, TalonCan topRightmotor, TalonCan bottomLeftmotor, TalonCan bottomRightmotor, 
+    		DigitalEncoder tL, DigitalEncoder tR, DigitalEncoder bL, DigitalEncoder bR){
+    	
+    	this.topLeftmotor = topLeftmotor;
+    	this.topRightmotor = topRightmotor;
+    	this.bottomLeftmotor = bottomLeftmotor;
+    	this.bottomRightmotor = bottomRightmotor;
+    	
+    	this.tL = tL;
+    	this.tR = tR;
+    	this.bL = bL;
+    	this.bR = bR;
+    	
     }
     
     public TalonCan getTopleftTalon() {
@@ -38,6 +55,22 @@ public class SRXMecanumDriveBase{
     
     public TalonCan getBottomrightTalon() {
         return bottomRightmotor;    
+    }
+    
+    public DigitalEncoder getTL(){
+    	return tL;
+    }
+    
+    public DigitalEncoder getTR(){
+    	return tR;
+    }
+    
+    public DigitalEncoder getBL(){
+    	return bL;
+    }
+    
+    public DigitalEncoder getBR(){
+    	return bR;
     }
     
     //drive forward and bakcwards by having all motors go in same direction

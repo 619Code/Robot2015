@@ -69,7 +69,7 @@ public class CrabDriveOnly extends IterativeRobot{
     public void teleopInit() {
         threadManager.killAllThreads(); // DO NOT REMOVE!!!
 
-        driveThread = new CrabDriveMappingThread(null, driveBase, driverStation, 15, threadManager);
+        driveThread = new CrabDriveMappingThread(driveBase, driverStation, 15, threadManager);
         driveThread.start();    
     }
     

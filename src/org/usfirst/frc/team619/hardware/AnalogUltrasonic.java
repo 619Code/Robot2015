@@ -19,9 +19,9 @@ public class AnalogUltrasonic{
     private final AnalogIn analog;
     
     private static final double PULSE_TIME_SECONDS = 0.000020;
-    private static final double INCHES_PER_VOLT = 102.396068;
-    private static final double CM_PER_VOLT = 260.086013;
-    private static final double MM_PER_VOLT = 2600.86013;
+    private static final double INCHES_PER_VOLT = 260.086013;
+    private static final double CM_PER_VOLT = 102.396068;
+    private static final double MM_PER_VOLT = 1023.96068;
     
     public AnalogUltrasonic(int channel){
         analog = new AnalogIn(channel);
@@ -43,12 +43,46 @@ public class AnalogUltrasonic{
         return analog.getVoltage() * INCHES_PER_VOLT;
     }
 
+    //used for when you don't want relatively far objects to mess up readings i.e. a bit more accurate
+    public double getDistanceIn(double limit) {
+    	
+    	double in = analog.getVoltage() * INCHES_PER_VOLT;
+    	
+    	if(in > limit)
+    		return limit;
+    	else
+    		return in;
+    	
+    }
+    
     public double getDistanceCM() {
         return analog.getVoltage() * CM_PER_VOLT;
     }
 
+    public double getDistanceCM(double limit) {
+    	
+    	double cm = analog.getVoltage() * CM_PER_VOLT;
+    	
+    	if(cm > limit)
+    		return limit;
+    	else
+    		return cm;
+    	
+    }
+    
     public double getDistanceMM() {
         return analog.getVoltage() * MM_PER_VOLT;
+    }
+    
+    public double getDistanceMM(double limit) {
+    	
+    	double mm = analog.getVoltage() * MM_PER_VOLT;
+    	
+    	if(mm > limit)
+    		return limit;
+    	else
+    		return mm;
+    	
     }
     
 }//end object AnalogUltrasonic

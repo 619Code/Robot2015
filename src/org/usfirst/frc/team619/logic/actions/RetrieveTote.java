@@ -1,22 +1,28 @@
 package org.usfirst.frc.team619.logic.actions;
 
 import org.usfirst.frc.team619.logic.ThreadManager;
-import org.usfirst.frc.team619.subsystems.drive.MecanumDriveBase;
-import org.usfirst.frc.team619.subsystems.sensor.SensorBase;
+import org.usfirst.frc.team619.subsystems.Flapper;
+import org.usfirst.frc.team619.subsystems.drive.SRXMecanumDriveBase;
+
 import edu.wpi.first.wpilibj.Timer;
 
+/*
+ * Picks up one tote and brings it close to the scoring platform
+ * 
+ * @author Wilson 
+*/
 public class RetrieveTote extends Action{
 
-	protected MecanumDriveBase driveBase;
-	protected SensorBase sensorBase;
+	protected SRXMecanumDriveBase driveBase;
+	protected Flapper flapper;
 	
 	private boolean isComplete = false;
 	
-	public RetrieveTote(int waitForDependenciesPeriod, int runPeriod, ThreadManager threadManager, MecanumDriveBase driveBase, SensorBase sensorBase) {
+	public RetrieveTote(int waitForDependenciesPeriod, int runPeriod, ThreadManager threadManager, SRXMecanumDriveBase driveBase, Flapper flapper) {
 		super(waitForDependenciesPeriod, runPeriod, threadManager);
 		
 		this.driveBase = driveBase;
-		this.sensorBase = sensorBase;
+		this.flapper = flapper;
 	}
 
 	@Override
@@ -27,17 +33,13 @@ public class RetrieveTote extends Action{
 	@Override
 	protected void cycle() {
 		isComplete = true;
+		//Assumes the bot is preset around the tote and is at preset 1 with the flapper.
 		
-		driveBase.drive(1);
-		Timer.delay(1);
-		driveBase.stop();
-		
-		sensorBase.getUltrasonicSensor(1);
-		
-		
-
-		
-		
+		flapper.setLevel(0);
+		flapper.setLevel(1);
+		driveBase.slide(1);
+		Timer.delay(3);
+		driveBase.stop();				
 	}
 
 }

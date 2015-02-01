@@ -31,8 +31,6 @@ public class FlapperMappingThread extends RobotThread{
 	@Override
 	protected void cycle() {
 		
-		boolean stopLift = false;
-		
 		//Button 2 (red button on saitek aviators) shoots out both pneumatics
 		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON2)){
 			flapper.setHands(true);
@@ -40,88 +38,27 @@ public class FlapperMappingThread extends RobotThread{
 		
 		//Button 3 (main thumb button on saitek aviators) returns lift to its lowest point
 		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON3)){
-			while(!stopLift){
-				if(flapper.bottomSwitchValue())
-					stopLift = true;
-				else
-					flapper.getLift().set(-liftSpeed);
-			}
-			
-			if(stopLift){
-				lastSwitch = 0;
-				stopLift = false;
-			}
-			
+			flapper.setLevel(0);
 		}
 		
 		//Button 5 (far left toggle switch (toggle up) also labeled T1) move lift to height needed to move around one tote 
 		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON5)){
-			while(!stopLift){
-				if(flapper.levelOneSwitchValue())
-					stopLift = true;
-				else if(lastSwitch > 1)
-					flapper.getLift().set(-liftSpeed);
-				else if(lastSwitch < 1)
-					flapper.getLift().set(liftSpeed);
-			}
-			
-			if(stopLift){
-				lastSwitch = 1;
-				stopLift = false;
-			}
-			
+			flapper.setLevel(1);
 		}
 		
 		//Button 6 (far left toggle switch (toggle down) also labeled T2) move lift to height needed to move around two totes 
 		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON6)){
-			while(!stopLift){
-				if(flapper.levelOneSwitchValue())
-					stopLift = true;
-				else if(lastSwitch > 2)
-					flapper.getLift().set(-liftSpeed);
-				else if(lastSwitch < 2)
-					flapper.getLift().set(liftSpeed);
-			}
-			
-			if(stopLift){
-				lastSwitch = 2;
-				stopLift = false;
-			}
-			
+			flapper.setLevel(2);
 		}
 		
 		//Button 7 (left toggle switch (toggle up) also labeled T3) move lift to height needed to move around three totes
 		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON5)){
-			while(!stopLift){
-				if(flapper.levelOneSwitchValue())
-					stopLift = true;
-				else if(lastSwitch > 3)
-					flapper.getLift().set(-liftSpeed);
-				else if(lastSwitch < 3)
-					flapper.getLift().set(liftSpeed);
-			}
-			
-			if(stopLift){
-				lastSwitch = 3;
-				stopLift = false;
-			}
-			
+			flapper.setLevel(3);
 		}
 		
 		//Button 8 (left toggle switch (toggle down) also labeled T4) move lift to height needed to move around four totes 
 		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON5)){
-			while(!stopLift){
-				if(flapper.topSwitchValue())
-					stopLift = true;
-				else
-					flapper.getLift().set(liftSpeed);
-			}
-			
-			if(stopLift){
-				lastSwitch = 4;
-				stopLift = false;
-			}
-			
+			flapper.setLevel(4);
 		}
 		
 	}

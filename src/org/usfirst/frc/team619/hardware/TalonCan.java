@@ -34,4 +34,8 @@ public class TalonCan {
 		return talon.getOutputCurrent();
 	}
 	
+	public void setReversed(boolean reversed){
+		talon.reverseOutput(reversed);
+	}
+	
 }

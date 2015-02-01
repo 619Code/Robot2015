@@ -9,9 +9,19 @@
 package org.usfirst.frc.team619.robot;
 
 import org.usfirst.frc.team619.hardware.AnalogUltrasonic;
+import org.usfirst.frc.team619.hardware.DigitalEncoder;
+import org.usfirst.frc.team619.hardware.I2CAccelerometer;
 import org.usfirst.frc.team619.hardware.LimitSwitch;
+import org.usfirst.frc.team619.hardware.TalonCan;
+import org.usfirst.frc.team619.logic.AutonomousSelector;
 import org.usfirst.frc.team619.logic.ThreadManager;
+import org.usfirst.frc.team619.logic.actions.StackTotes;
+import org.usfirst.frc.team619.logic.actions.StealCan;
+import org.usfirst.frc.team619.logic.mapping.SRXCrabDriveMappingThread;
+import org.usfirst.frc.team619.logic.mapping.SensorBaseMappingThread;
+import org.usfirst.frc.team619.subsystems.Flapper;
 import org.usfirst.frc.team619.subsystems.FourStickDriverStation;
+import org.usfirst.frc.team619.subsystems.drive.SRXMecanumDriveBase;
 import org.usfirst.frc.team619.subsystems.sensor.SensorBase;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -28,13 +38,30 @@ public class SensorTesting extends IterativeRobot {
     
 	//declare all variables and objects here
 	
+	AutonomousSelector autoSelect;
+	StealCan stealCan;
+	StackTotes stackTotes;
+	
 	ThreadManager threadManager;
 	FourStickDriverStation driverStation;
+	
+	SensorBaseMappingThread sensorThread;
+	SRXCrabDriveMappingThread driveThread;
+	
+	I2CAccelerometer accel;
 	
 	AnalogUltrasonic sensor;
 	LimitSwitch limitSwitch;
 	
 	SensorBase sensorBase;
+	SRXMecanumDriveBase driveBase;
+	
+	Flapper flapper;
+	
+	TalonCan topL;
+	TalonCan topR;
+	TalonCan botL;
+	TalonCan botR;
 	
 	/**
      * This function is run when the robot is first started up and should be
@@ -64,10 +91,31 @@ public class SensorTesting extends IterativeRobot {
         //plug into analog input on Athena
         sensor = new AnalogUltrasonic(3);
         
+        //plug into I2C port on Athena
+        accel = new I2CAccelerometer();
+        
         //plug into pneumatics module
         
+        //CAN
+        topL = new TalonCan(2);
+        topR = new TalonCan(3);
+        botL = new TalonCan(1);
+        botR = new TalonCan(4);
+        
         //subsystems
-        sensorBase = new SensorBase(sensor);
+        driveBase = new SRXMecanumDriveBase(topL, topR, botL, botR);
+        sensorBase = new SensorBase(accel);
+        sensorBase.addUltrasonicSensor(sensor);
+        
+        autoSelect = new AutonomousSelector();
+        
+        stealCan = new StealCan(0, 1, threadManager, sensorBase);
+        stackTotes = new StackTotes(0, 1, threadManager, driveBase, flapper, sensorBase);
+        
+        autoSelect.addAutonomous("Steal the can", stealCan);
+        autoSelect.addAutonomous("Begin stacking totes from landfill", stackTotes);
+        
+        SmartDashboard.putData("Autonomous Selector", autoSelect.getAutoChooser());
         
     }
 
@@ -76,12 +124,22 @@ public class SensorTesting extends IterativeRobot {
      */
     public void autonomousInit(){
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
+    	
     }
     /**
      * This function is called when teleop is initialized
      */
     public void teleopInit(){
+    	
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
+    	
+    	sensorThread = new SensorBaseMappingThread(sensorBase, driverStation, 0, threadManager);
+    	driveThread = new SRXCrabDriveMappingThread(driveBase, driverStation, 0, threadManager);
+    	
+    	driveThread.start();
+
+    	sensorBase.startNetworkCamera();
+    	
     }
     /**
      * This function is called periodically during autonomous
@@ -95,7 +153,23 @@ public class SensorTesting extends IterativeRobot {
      * In general you shouldn't use this
      */
     public void teleopPeriodic() {
-        
+    	
+    	if(sensorBase.getI2CAccelerometer().getX() > 10){
+    		
+    		driveThread.stopRunning();
+    		driveBase.slide(-1);
+    		flapper.setLevel(0);
+    		driveThread.run();
+    		
+    	}
+    	
+    	SmartDashboard.putNumber("ultrasonic", sensorBase.getUltrasonicSensor(3).getDistanceCM());
+    	SmartDashboard.putBoolean("LimitSwitch", limitSwitch.get());
+    	
+    	try{
+    		SmartDashboard.putBoolean("Camera on", sensorBase.getCamera().isOn());
+    	}catch(Exception e){}
+    	
     }
     /**
      * This function is called periodically during test mode
@@ -109,8 +183,6 @@ public class SensorTesting extends IterativeRobot {
     }
     
     public void teleopContinuous(){
-    	SmartDashboard.putNumber("ultrasonic", sensorBase.getUltrasonicSensor(3).getDistanceCM());
-    	SmartDashboard.putBoolean("LimitSwitch", limitSwitch.get());
     }
     
     public void disabledInit(){

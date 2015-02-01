@@ -5,13 +5,39 @@ import edu.wpi.first.wpilibj.CameraServer;
 public class Camera {
 
 	CameraServer camera;
-	//The current name of the camera is cam0 as of 1/24/15
+	
+	String cameraName;
 	
 	/*this can be found by accessing the webdashboard with the camera plugged into Athena*/
 	public Camera(String cameraName){
+		this.cameraName = cameraName;
 		camera = CameraServer.getInstance();
 		camera.setQuality(50);
 		camera.startAutomaticCapture(cameraName);
+	}
+	
+	public boolean isOn(){
+		return camera.isAutoCaptureStarted();
+	}
+	
+	public int getQuality(){
+		return camera.getQuality();
+	}
+	
+	public String getName(){
+		return cameraName;
+	}
+	
+	public CameraServer getInstance(){
+		return CameraServer.getInstance();
+	}
+	
+	public void setOn(){
+		camera.startAutomaticCapture(cameraName);
+	}
+	
+	public void setQuality(int quality){
+		camera.setQuality(quality);
 	}
 	
 }

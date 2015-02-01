@@ -52,9 +52,13 @@ public class Robot extends IterativeRobot {
         
         //plug into DIO on Athena
         
+        //plug into I2C on Athena
+        
         //plug into Analog Input on Athena
         
         //plug into pneumatics module
+        
+        //CAN
         
         //subsystems
         

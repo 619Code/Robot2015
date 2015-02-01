@@ -4,9 +4,8 @@
  */
 package org.usfirst.frc.team619.logic.mapping;
 
-import org.usfirst.frc.team619.hardware.Talon;
 import org.usfirst.frc.team619.hardware.Joystick;
-import org.usfirst.frc.team619.hardware.AnalogGyro;
+import org.usfirst.frc.team619.hardware.Talon;
 import org.usfirst.frc.team619.logic.RobotThread;
 import org.usfirst.frc.team619.logic.ThreadManager;
 import org.usfirst.frc.team619.subsystems.DriverStation;
@@ -27,16 +26,14 @@ public class CrabDriveMappingThread extends RobotThread {
     protected Talon topRightTalon;
     protected Talon bottomLeftTalon;
     protected Talon bottomRightTalon;
-    protected AnalogGyro gyro;
     
    // Talon topLefttalon, topRighttalon, bottomLefttalon, bottomRighttalon;
 
-    public CrabDriveMappingThread(AnalogGyro gyro, MecanumDriveBase mecanumDriveBase,
+    public CrabDriveMappingThread(MecanumDriveBase mecanumDriveBase,
             DriverStation driverStation, int period, ThreadManager threadManager) {
         super(period, threadManager);
         this.mecanumDriveBase = mecanumDriveBase;
         this.driverStation = driverStation;
-        this.gyro = gyro;
     }
 
     protected void cycle() {
