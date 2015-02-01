@@ -51,7 +51,7 @@ public class SensorTesting extends IterativeRobot {
 	I2CAccelerometer accel;
 	
 	AnalogUltrasonic sensor;
-	LimitSwitch limitSwitch;
+	LimitSwitch limitSwitch;	
 	
 	SensorBase sensorBase;
 	SRXMecanumDriveBase driveBase;
