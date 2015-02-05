@@ -82,8 +82,8 @@ public class Jenga extends IterativeRobot {
 	LimitSwitch levelThree;
 	LimitSwitch top;
 	
-//	TalonCan driveFrontLeft;
-//	TalonCan driveFrontRight;
+	TalonCan driveFrontLeft;
+	TalonCan driveFrontRight;
 	TalonCan driveBackLeft;
 	TalonCan driveBackRight;
 	
@@ -136,8 +136,8 @@ public class Jenga extends IterativeRobot {
         rightHand = new Solenoid(1);
         
         //CAN
-//        driveFrontLeft = new TalonCan(2);
-//        driveFrontRight = new TalonCan(3);
+        driveFrontLeft = new TalonCan(2);
+        driveFrontRight = new TalonCan(3);
         driveBackLeft = new TalonCan(1);
         driveBackRight = new TalonCan(4);
         

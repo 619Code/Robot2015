@@ -34,6 +34,10 @@ public class TalonCan {
 		return talon.getOutputCurrent();
 	}
 	
+	public double getSpeed(){
+		return talon.getSpeed();
+	}
+	
 	public void setReversed(boolean reversed){
 		talon.reverseOutput(reversed);
 	}

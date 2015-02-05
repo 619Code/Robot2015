@@ -9,8 +9,9 @@ package org.usfirst.frc.team619.robot;
 
 import org.usfirst.frc.team619.logic.ThreadManager;
 import org.usfirst.frc.team619.logic.mapping.CrabDriveMappingThread;
+import org.usfirst.frc.team619.logic.mapping.SRXCrabDriveMappingThread;
 import org.usfirst.frc.team619.subsystems.FourStickDriverStation;
-import org.usfirst.frc.team619.subsystems.drive.MecanumDriveBase;
+import org.usfirst.frc.team619.subsystems.drive.SRXMecanumDriveBase;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,13 +28,13 @@ public class CrabDriveOnly extends IterativeRobot{
     
     // Robot Systems (stuff from org.carobotics.subsystems)
     FourStickDriverStation driverStation;
-    MecanumDriveBase driveBase;
+    SRXMecanumDriveBase driveBase;
     
-    // Thread Manager
+    // Thread Manager	
     ThreadManager threadManager = new ThreadManager();
     
     // Logic Threads (stuff from org.carobotics.logic)
-    CrabDriveMappingThread driveThread;
+    SRXCrabDriveMappingThread driveThread;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -51,7 +52,7 @@ public class CrabDriveOnly extends IterativeRobot{
         // If you are creating something not from org.carobotics.subsystems, YER DOING IT WRONG
         
         driverStation = new FourStickDriverStation(1, 2, 3, 4);
-        driveBase = new MecanumDriveBase(3, 4, 2, 1);
+        driveBase = new SRXMecanumDriveBase(3, 1, 2, 4);
             
         //autonomousSelector = new AutonomousSelector();
     }
@@ -69,7 +70,7 @@ public class CrabDriveOnly extends IterativeRobot{
     public void teleopInit() {
         threadManager.killAllThreads(); // DO NOT REMOVE!!!
 
-        driveThread = new CrabDriveMappingThread(driveBase, driverStation, 15, threadManager);
+        driveThread = new SRXCrabDriveMappingThread(driveBase, driverStation, 15, threadManager);
         driveThread.start();    
     }
     
@@ -91,5 +92,14 @@ public class CrabDriveOnly extends IterativeRobot{
     }
     
     public void disabledContinuous(){
+    }
+    
+    public void testInit(){
+    }
+    
+    public void testPeriodic(){
+    }
+    
+    public void testDisabled(){
     }
 }
