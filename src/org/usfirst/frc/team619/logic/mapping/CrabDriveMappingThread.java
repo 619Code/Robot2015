@@ -11,6 +11,8 @@ import org.usfirst.frc.team619.logic.ThreadManager;
 import org.usfirst.frc.team619.subsystems.DriverStation;
 import org.usfirst.frc.team619.subsystems.drive.MecanumDriveBase;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  *
  * @author caadmin
@@ -41,14 +43,9 @@ public class CrabDriveMappingThread extends RobotThread {
         ///System.out.println(System.currentTimeMillis()-lastTime);
         ///lastTime = System.currentTimeMillis();
         
-        double leftScalePercent = driverStation.getLeftJoystick().getAxis(Joystick.Axis.AXIS_THROTTLE);  //fix
-        if(leftScalePercent < 0.3){
-            leftScalePercent = 0.3;
-        }
-        
-        double rightScalePercent = driverStation.getRightJoystick().getAxis(Joystick.Axis.AXIS_THROTTLE);
-        if(rightScalePercent < 0.3){
-            rightScalePercent = 0.3;
+        double scalePercent = driverStation.getLeftJoystick().getAxis(Joystick.Axis.AXIS_THROTTLE);  //fix
+        if(scalePercent < 0.3){
+            scalePercent = 0.3;
         }
         
         double xAxis = driverStation.getRightJoystick().getAxis(Joystick.Axis.AXIS_Y)*-1;
@@ -77,17 +74,12 @@ public class CrabDriveMappingThread extends RobotThread {
             bottomLeftpercent = sidepercent + percent + turnpercent;
             bottomRightpercent = -sidepercent + percent - turnpercent;
 
-            topLeftpercent *= leftScalePercent;
-            topRightpercent *= rightScalePercent;
-            bottomLeftpercent *= leftScalePercent;
-            bottomRightpercent *= rightScalePercent;
-
-            // topRightpercent *= 0.5;
-            // bottomRightpercent *= 0.5;
+            topLeftpercent *= scalePercent;
+            topRightpercent *= scalePercent;
+            bottomLeftpercent *= scalePercent;
+            bottomRightpercent *= scalePercent;
+            
         }
-        
-        /*System.out.println("TL: " + mecanumDriveBase.getTopleftTalon().getSpeed() + " | TR: " + mecanumDriveBase.getToprightTalon().getSpeed()
-                    + " | BL: " + mecanumDriveBase.getBottomleftTalon().getSpeed() + " | BR: " + mecanumDriveBase.getBottomrightTalon().getSpeed());*/
         
         try {
             mecanumDriveBase.getTopleftTalon().set(topLeftpercent);
@@ -105,6 +97,10 @@ public class CrabDriveMappingThread extends RobotThread {
             System.out.println("[MechanumDriveMappingThread] percent: "+ percent);
             System.out.println("[MechanumDriveMappingThread] sidepercent: "+ sidepercent);
             System.out.println("[MechanumDriveMappingThread] turnpercent: "+ turnpercent);
+            
+            SmartDashboard.putNumber("percent", percent);
+            SmartDashboard.putNumber("Side Percent", sidepercent);
+            SmartDashboard.putNumber("Turn Percent", turnpercent);
             
         }
             
