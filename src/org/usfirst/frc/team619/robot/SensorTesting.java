@@ -15,8 +15,8 @@ import org.usfirst.frc.team619.hardware.LimitSwitch;
 import org.usfirst.frc.team619.hardware.TalonCan;
 import org.usfirst.frc.team619.logic.AutonomousSelector;
 import org.usfirst.frc.team619.logic.ThreadManager;
-import org.usfirst.frc.team619.logic.actions.StackTotes;
-import org.usfirst.frc.team619.logic.actions.StealCan;
+import org.usfirst.frc.team619.logic.actions.StackTotesMecanum;
+import org.usfirst.frc.team619.logic.actions.StealCanMecanum;
 import org.usfirst.frc.team619.logic.mapping.SRXCrabDriveMappingThread;
 import org.usfirst.frc.team619.logic.mapping.SensorBaseMappingThread;
 import org.usfirst.frc.team619.subsystems.Flapper;
@@ -39,8 +39,8 @@ public class SensorTesting extends IterativeRobot {
 	//declare all variables and objects here
 	
 	AutonomousSelector autoSelect;
-	StealCan stealCan;
-	StackTotes stackTotes;
+	StealCanMecanum stealCan;
+	StackTotesMecanum stackTotes;
 	
 	ThreadManager threadManager;
 	FourStickDriverStation driverStation;
@@ -109,8 +109,8 @@ public class SensorTesting extends IterativeRobot {
         
         autoSelect = new AutonomousSelector();
         
-        stealCan = new StealCan(0, 1, threadManager, sensorBase);
-        stackTotes = new StackTotes(0, 1, threadManager, driveBase, flapper, sensorBase);
+        stealCan = new StealCanMecanum(0, 1, threadManager, sensorBase);
+        stackTotes = new StackTotesMecanum(0, 1, threadManager, driveBase, flapper, sensorBase);
         
         autoSelect.addAutonomous("Steal the can", stealCan);
         autoSelect.addAutonomous("Begin stacking totes from landfill", stackTotes);

@@ -15,13 +15,13 @@ import org.usfirst.frc.team619.hardware.Solenoid;
 import org.usfirst.frc.team619.hardware.TalonCan;
 import org.usfirst.frc.team619.logic.AutonomousSelector;
 import org.usfirst.frc.team619.logic.ThreadManager;
-import org.usfirst.frc.team619.logic.actions.RetrieveCan;
-import org.usfirst.frc.team619.logic.actions.RetrieveThreeCans;
-import org.usfirst.frc.team619.logic.actions.RetrieveThreeTotes;
-import org.usfirst.frc.team619.logic.actions.RetrieveTote;
-import org.usfirst.frc.team619.logic.actions.RetrieveToteAndCan;
-import org.usfirst.frc.team619.logic.actions.StackTotes;
-import org.usfirst.frc.team619.logic.actions.StealCan;
+import org.usfirst.frc.team619.logic.actions.RetrieveCanMecanum;
+import org.usfirst.frc.team619.logic.actions.RetrieveThreeCansMecanum;
+import org.usfirst.frc.team619.logic.actions.RetrieveThreeTotesMecanum;
+import org.usfirst.frc.team619.logic.actions.RetrieveToteMecanum;
+import org.usfirst.frc.team619.logic.actions.RetrieveToteAndCanMecanum;
+import org.usfirst.frc.team619.logic.actions.StackTotesMecanum;
+import org.usfirst.frc.team619.logic.actions.StealCanMecanum;
 import org.usfirst.frc.team619.logic.mapping.SRXTankDriveMappingThread;
 import org.usfirst.frc.team619.logic.mapping.SensorBaseMappingThread;
 import org.usfirst.frc.team619.subsystems.Flapper;
@@ -50,13 +50,13 @@ public class Jenga extends IterativeRobot {
 	
 	//Autonomous objects
 	AutonomousSelector autoSelect;
-	StealCan stealCan;
-	StackTotes stackTotes;
-	RetrieveCan retrieveCan;
-	RetrieveTote retrieveTote;
-	RetrieveThreeCans retrieveThreeCans;
-	RetrieveThreeTotes retrieveThreeTotes;
-	RetrieveToteAndCan retrieveToteAndCan;
+	StealCanMecanum stealCan;
+	StackTotesMecanum stackTotes;
+	RetrieveCanMecanum retrieveCan;
+	RetrieveToteMecanum retrieveTote;
+	RetrieveThreeCansMecanum retrieveThreeCans;
+	RetrieveThreeTotesMecanum retrieveThreeTotes;
+	RetrieveToteAndCanMecanum retrieveToteAndCan;
 	
 	//Logic
 	SensorBaseMappingThread sensorThread;
@@ -153,7 +153,7 @@ public class Jenga extends IterativeRobot {
         //SmartDashboard setup (all things dealing with the SmartDashboard initialized here)
         autoSelect = new AutonomousSelector();
         
-        stealCan = new StealCan(0, 1, threadManager, sensorBase);
+        stealCan = new StealCanMecanum(0, 1, threadManager, sensorBase);
 //        retrieveCan = new RetrieveCan(0, 1, threadManager, driveBase, flapper);
 //        retrieveTote = new RetrieveTote(0, 1, threadManager, driveBase, flapper);
 //        stackTotes = new StackTotes(0, 1, threadManager, driveBase, flapper, sensorBase);

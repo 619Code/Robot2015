@@ -1,6 +1,9 @@
 package org.usfirst.frc.team619.hardware;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CANTalon.ControlMode;
+import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
+import edu.wpi.first.wpilibj.TalonSRX;
 
 /**
  * 
@@ -13,6 +16,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 public class TalonCan {
 
 	CANTalon talon;
+	TalonSRX talonSRX;
 	
 	public TalonCan(int canID){
 		talon = new CANTalon(canID);
@@ -31,7 +35,7 @@ public class TalonCan {
 	}
 	
 	public double getOutputCurrent(){
-		return talon.getOutputCurrent();
+		return talon.getOutputCurrent();  
 	}
 	
 	public double getSpeed(){
@@ -40,6 +44,10 @@ public class TalonCan {
 	
 	public void setReversed(boolean reversed){
 		talon.reverseOutput(reversed);
+	}
+	
+	public void setFeedbackDevice(FeedbackDevice device){
+		talon.setFeedbackDevice(device);
 	}
 	
 }

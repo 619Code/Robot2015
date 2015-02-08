@@ -72,4 +72,9 @@ public class SRXDriveBase {
     	rightMotor.set(-turnPercent);
     }
     
+    public void stop(){
+    	leftMotor.set(0);
+    	rightMotor.set(0);
+    }
+    
 }
