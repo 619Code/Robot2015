@@ -12,7 +12,6 @@ public class SRXDriveBase {
 
     public SRXDriveBase(int leftMotorTalonID, int rightMotorTalonID) {
         leftMotor = new TalonCan(leftMotorTalonID);
-        leftMotor.setReversed(true);
         rightMotor = new TalonCan(rightMotorTalonID);
         rightMotor.setReversed(true);
     }
@@ -27,6 +26,7 @@ public class SRXDriveBase {
     public SRXDriveBase(TalonCan leftMotor, TalonCan rightMotor){
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
+        rightMotor.setReversed(true);
     }//end constructor TalonDriveBase
 
     public SRXDriveBase(TalonCan leftMotor1, TalonCan leftMotor2, TalonCan rightMotor1, TalonCan rightMotor2) {

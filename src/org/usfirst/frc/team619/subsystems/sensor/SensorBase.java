@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.usfirst.frc.team619.hardware.AnalogAccelerometer;
 import org.usfirst.frc.team619.hardware.AnalogPotentiometer;
 import org.usfirst.frc.team619.hardware.AnalogUltrasonic;
+import org.usfirst.frc.team619.hardware.AthenaAccelerometer;
 import org.usfirst.frc.team619.hardware.Camera;
 import org.usfirst.frc.team619.hardware.DigitalEncoder;
 import org.usfirst.frc.team619.hardware.I2CAccelerometer;
@@ -19,6 +20,9 @@ public class SensorBase {
 	//there is only one I2C port on Athena so no need for ArrayList
 	protected I2CAccelerometer i2cAccelerometer;
 	
+	//there is only one built in accelerometer on Athena, so no need for ArrayList
+	protected AthenaAccelerometer athenaAccelerometer;
+	
 	protected ArrayList<AnalogUltrasonic> ultrasonicList;
 	protected ArrayList<AnalogPotentiometer> potentiometerList;
 	protected ArrayList<AnalogAccelerometer> accelerometerList;
@@ -30,6 +34,17 @@ public class SensorBase {
 		potentiometerList = new ArrayList <>();
 		accelerometerList = new ArrayList <>();
 		encoderList = new ArrayList<>();
+	}
+	
+	public SensorBase(AthenaAccelerometer accelerometer){
+		
+		athenaAccelerometer = accelerometer;
+		
+		ultrasonicList = new ArrayList<>();
+		potentiometerList = new ArrayList <>();
+		accelerometerList = new ArrayList <>();
+		encoderList = new ArrayList<>();
+		
 	}
 	
 	public SensorBase(I2CAccelerometer accelerometer){
@@ -59,6 +74,10 @@ public class SensorBase {
 		networkCamera = null;
 	}
 	
+	public void addEncoder(DigitalEncoder sensor){
+		encoderList.add(sensor);
+	}
+	
 	public void addUltrasonicSensor(AnalogUltrasonic sensor){
 		ultrasonicList.add(sensor);
 	}
@@ -70,9 +89,13 @@ public class SensorBase {
 	public void addPotentiometer(AnalogPotentiometer sensor){
 		potentiometerList.add(sensor);
 	}
+
+	public void addI2CAccelerometer(I2CAccelerometer i2cAccelerometer){
+		this.i2cAccelerometer = i2cAccelerometer;
+	}
 	
-	public void addEncoder(DigitalEncoder sensor){
-		encoderList.add(sensor);
+	public void addAthenaAccelerometer(AthenaAccelerometer athenaAccelerometer){
+		this.athenaAccelerometer = athenaAccelerometer;
 	}
 	
 	public Camera getCamera(){
@@ -129,6 +152,10 @@ public class SensorBase {
 
 	public I2CAccelerometer getI2CAccelerometer(){
 		return i2cAccelerometer;
+	}
+	
+	public AthenaAccelerometer getAthenaAccelerometer(){
+		return athenaAccelerometer;
 	}
 	
 }

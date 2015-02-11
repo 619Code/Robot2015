@@ -1,8 +1,8 @@
 package org.usfirst.frc.team619.subsystems;
 
+import org.usfirst.frc.team619.hardware.DualInputSolenoid;
 import org.usfirst.frc.team619.hardware.LimitSwitch;
 import org.usfirst.frc.team619.hardware.Solenoid;
-import org.usfirst.frc.team619.hardware.Talon;
 import org.usfirst.frc.team619.hardware.TalonCan;
 
 public class Flapper {
@@ -19,8 +19,7 @@ public class Flapper {
 	private TalonCan lift1;
 	private TalonCan lift2;
 	
-	private Solenoid leftHand;
-	private Solenoid rightHand;
+	private DualInputSolenoid hands;
 	
 	private LimitSwitch bottomSwitch;
 	private LimitSwitch levelOneSwitch;
@@ -28,12 +27,11 @@ public class Flapper {
 	private LimitSwitch levelThreeSwitch;
 	private LimitSwitch topSwitch;
 	
-	public Flapper(TalonCan lift1, TalonCan lift2, Solenoid leftHand, Solenoid rightHand, LimitSwitch bottomSwitch, LimitSwitch levelOneSwitch, LimitSwitch levelTwoSwitch, LimitSwitch levelThreeSwitch,
+	public Flapper(TalonCan lift1, TalonCan lift2, DualInputSolenoid hands, LimitSwitch bottomSwitch, LimitSwitch levelOneSwitch, LimitSwitch levelTwoSwitch, LimitSwitch levelThreeSwitch,
 				LimitSwitch topSwitch){
 		this.lift1 = lift1;
 		this.lift2 = lift2;
-		this.leftHand = leftHand;
-		this.rightHand = rightHand;
+		this.hands = hands;
 		this.bottomSwitch = bottomSwitch;
 		this.levelOneSwitch = levelOneSwitch;
 		this.levelTwoSwitch = levelTwoSwitch;
@@ -144,8 +142,11 @@ public class Flapper {
 	}
 	
 	public void setHands(boolean out){
-		leftHand.set(out);
-		rightHand.set(out);
+		hands.set(out);
+	}
+	
+	public int getCurrentSwitch(){
+		return lastSwitch;
 	}
 	
 }

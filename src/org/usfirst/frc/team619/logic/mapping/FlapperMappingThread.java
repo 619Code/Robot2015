@@ -31,6 +31,11 @@ public class FlapperMappingThread extends RobotThread{
 	@Override
 	protected void cycle() {
 		
+		double scalePercent = driverStation.getFourthJoystick().getAxis(Joystick.Axis.AXIS_Z);
+		double yAxis = driverStation.getFourthJoystick().getAxis(Joystick.Axis.AXIS_Y);
+		
+		double liftSpeed = yAxis * scalePercent;
+		
 		//Button 2 (red button on saitek aviators) shoots out both pneumatics
 		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON2)){
 			flapper.setHands(true);
@@ -59,6 +64,16 @@ public class FlapperMappingThread extends RobotThread{
 		//Button 8 (left toggle switch (toggle down) also labeled T4) move lift to height needed to move around four totes 
 		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON5)){
 			flapper.setLevel(4);
+		}
+		
+		//Trigger on right joystick for Lift override
+		if(driverStation.getFourthJoystick().getButton(Joystick.Button.BUTTON1)){
+			flapper.setLiftSpeed(0);
+		}
+		
+		//Red Button on right joystick for manual manipulation of Lift
+		if(driverStation.getFourthJoystick().getButton(Joystick.Button.BUTTON2)){
+			flapper.setLiftSpeed(liftSpeed);
 		}
 		
 	}

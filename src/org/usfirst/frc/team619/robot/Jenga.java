@@ -9,19 +9,17 @@
 package org.usfirst.frc.team619.robot;
 
 import org.usfirst.frc.team619.hardware.AnalogUltrasonic;
-import org.usfirst.frc.team619.hardware.I2CAccelerometer;
+import org.usfirst.frc.team619.hardware.AthenaAccelerometer;
+import org.usfirst.frc.team619.hardware.DualInputSolenoid;
 import org.usfirst.frc.team619.hardware.LimitSwitch;
-import org.usfirst.frc.team619.hardware.Solenoid;
 import org.usfirst.frc.team619.hardware.TalonCan;
 import org.usfirst.frc.team619.logic.AutonomousSelector;
 import org.usfirst.frc.team619.logic.ThreadManager;
-import org.usfirst.frc.team619.logic.actions.RetrieveCanMecanum;
-import org.usfirst.frc.team619.logic.actions.RetrieveThreeCansMecanum;
-import org.usfirst.frc.team619.logic.actions.RetrieveThreeTotesMecanum;
-import org.usfirst.frc.team619.logic.actions.RetrieveToteMecanum;
-import org.usfirst.frc.team619.logic.actions.RetrieveToteAndCanMecanum;
-import org.usfirst.frc.team619.logic.actions.StackTotesMecanum;
-import org.usfirst.frc.team619.logic.actions.StealCanMecanum;
+import org.usfirst.frc.team619.logic.actions.RetrieveCanTank;
+import org.usfirst.frc.team619.logic.actions.RetrieveThreeTotesTank;
+import org.usfirst.frc.team619.logic.actions.RetrieveToteAndCanTank;
+import org.usfirst.frc.team619.logic.actions.RetrieveToteTank;
+import org.usfirst.frc.team619.logic.actions.StackTotesTank;
 import org.usfirst.frc.team619.logic.mapping.SRXTankDriveMappingThread;
 import org.usfirst.frc.team619.logic.mapping.SensorBaseMappingThread;
 import org.usfirst.frc.team619.subsystems.Flapper;
@@ -30,7 +28,6 @@ import org.usfirst.frc.team619.subsystems.drive.SRXDriveBase;
 import org.usfirst.frc.team619.subsystems.sensor.SensorBase;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -50,13 +47,11 @@ public class Jenga extends IterativeRobot {
 	
 	//Autonomous objects
 	AutonomousSelector autoSelect;
-	StealCanMecanum stealCan;
-	StackTotesMecanum stackTotes;
-	RetrieveCanMecanum retrieveCan;
-	RetrieveToteMecanum retrieveTote;
-	RetrieveThreeCansMecanum retrieveThreeCans;
-	RetrieveThreeTotesMecanum retrieveThreeTotes;
-	RetrieveToteAndCanMecanum retrieveToteAndCan;
+	StackTotesTank stackTotes;
+	RetrieveCanTank retrieveCan;
+	RetrieveToteTank retrieveTote;
+	RetrieveThreeTotesTank retrieveThreeTotes;
+	RetrieveToteAndCanTank retrieveToteAndCan;
 	
 	//Logic
 	SensorBaseMappingThread sensorThread;
@@ -69,7 +64,7 @@ public class Jenga extends IterativeRobot {
 	
 	//Hardware
 	
-	I2CAccelerometer accel;
+	AthenaAccelerometer accel;
 	
 	AnalogUltrasonic leftSonic;
 	AnalogUltrasonic rightSonic;
@@ -82,16 +77,13 @@ public class Jenga extends IterativeRobot {
 	LimitSwitch levelThree;
 	LimitSwitch top;
 	
-	TalonCan driveFrontLeft;
-	TalonCan driveFrontRight;
-	TalonCan driveBackLeft;
-	TalonCan driveBackRight;
+	TalonCan driveLeft;
+	TalonCan driveRight;
 	
 	TalonCan lift1;
 	TalonCan lift2;
 	
-	Solenoid leftHand;
-	Solenoid rightHand;
+	DualInputSolenoid hands;
 	
 	/**
      * This function is run when the robot is first started up and should be
@@ -129,17 +121,17 @@ public class Jenga extends IterativeRobot {
         frontRightSonic = new AnalogUltrasonic(2);
         
         //plug into I2C on Athena
-        accel = new I2CAccelerometer();
+        accel = new AthenaAccelerometer();
         
         //plug into pneumatics module
-        leftHand = new Solenoid(0);
-        rightHand = new Solenoid(1);
+        hands = new DualInputSolenoid(0, 1);
         
         //CAN
-        driveFrontLeft = new TalonCan(2);
-        driveFrontRight = new TalonCan(3);
-        driveBackLeft = new TalonCan(1);
-        driveBackRight = new TalonCan(4);
+        driveLeft = new TalonCan(1);
+        driveRight = new TalonCan(2);
+        
+        lift1 = new TalonCan(3);
+        lift2 = new TalonCan(4);
         
         //subsystems
         sensorBase = new SensorBase(accel);
@@ -147,24 +139,20 @@ public class Jenga extends IterativeRobot {
         sensorBase.addUltrasonicSensor(rightSonic);
         sensorBase.addUltrasonicSensor(frontLeftSonic);
         sensorBase.addUltrasonicSensor(frontRightSonic);
-        driveBase = new SRXDriveBase(driveBackLeft, driveBackRight);
-        flapper = new Flapper(lift1, lift2, leftHand, rightHand, bottom, levelOne, levelTwo, levelThree, top);
+        driveBase = new SRXDriveBase(driveLeft, driveRight);
+        flapper = new Flapper(lift1, lift2, hands, bottom, levelOne, levelTwo, levelThree, top);
         
         //SmartDashboard setup (all things dealing with the SmartDashboard initialized here)
         autoSelect = new AutonomousSelector();
         
-        stealCan = new StealCanMecanum(0, 1, threadManager, sensorBase);
-//        retrieveCan = new RetrieveCan(0, 1, threadManager, driveBase, flapper);
-//        retrieveTote = new RetrieveTote(0, 1, threadManager, driveBase, flapper);
-//        stackTotes = new StackTotes(0, 1, threadManager, driveBase, flapper, sensorBase);
-//        retrieveThreeCans = new RetrieveThreeCans(0, 1, threadManager, driveBase, flapper, sensorBase);
-//        retrieveThreeTotes = new RetrieveThreeTotes(0, 1, threadManager, driveBase, flapper, sensorBase);
-//        retrieveToteAndCan = new RetrieveToteAndCan(0, 1, threadManager, driveBase, flapper, sensorBase);
+        retrieveCan = new RetrieveCanTank(0, 1, threadManager, driveBase, flapper);
+        retrieveTote = new RetrieveToteTank(0, 1, threadManager, driveBase, flapper);
+        stackTotes = new StackTotesTank(0, 1, threadManager, driveBase, flapper, sensorBase);
+        retrieveThreeTotes = new RetrieveThreeTotesTank(0, 1, threadManager, driveBase, flapper, sensorBase);
+        retrieveToteAndCan = new RetrieveToteAndCanTank(0, 1, threadManager, driveBase, flapper, sensorBase);
         
-        autoSelect.addAutonomous("Steal the can", stealCan);
         autoSelect.addAutonomous("Move only our can", retrieveCan);
         autoSelect.addAutonomous("Move only our tote", retrieveTote);
-        autoSelect.addAutonomous("Move all three cans", retrieveThreeCans);
         autoSelect.addAutonomous("Move all three totes", retrieveThreeTotes);
         autoSelect.addAutonomous("Move only our tote and can", retrieveToteAndCan);
         autoSelect.addAutonomous("Begin stacking totes from landfill", stackTotes);
@@ -179,10 +167,13 @@ public class Jenga extends IterativeRobot {
     public void autonomousInit(){
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
     	
+    	//retrieve selected autonomous and run it
     	SmartDashboard.putString("Selected Autonomous", autoSelect.getChoice().getName());
     	autoSelect.startChoice();
     	
+    	//start cameras
     	sensorBase.startCamera("cam0");
+    	sensorBase.startNetworkCamera();
     	
     }
     /**
@@ -194,7 +185,13 @@ public class Jenga extends IterativeRobot {
     	sensorThread = new SensorBaseMappingThread(sensorBase, driverStation, 0, threadManager);
     	driveThread = new SRXTankDriveMappingThread(driveBase, driverStation, 0, threadManager);
     
+    	//start threads
+    	sensorThread.start();
+    	driveThread.start();
+    	
+    	//start cameras again because they should be killed by threadManager
     	sensorBase.startCamera("cam0");
+    	sensorBase.startNetworkCamera();
     	
     }
     /**
@@ -210,11 +207,11 @@ public class Jenga extends IterativeRobot {
     public void teleopPeriodic() {
     	
     	//flipping override
-    	if(sensorBase.getI2CAccelerometer().getX() > 10){
+    	if(sensorBase.getAthenaAccelerometer().getX() > 10){
     		
     		flapper.setLevel(0);
     		
-    		while(sensorBase.getI2CAccelerometer().getX() > 10)
+    		while(sensorBase.getAthenaAccelerometer().getX() > 10)
     			driveBase.drive(-1);
     		
     	}
@@ -224,9 +221,13 @@ public class Jenga extends IterativeRobot {
     	SmartDashboard.putNumber("Front right sonic", sensorBase.getUltrasonicSensor(2).getDistanceCM());
     	SmartDashboard.putNumber("Side left sonic", sensorBase.getUltrasonicSensor(0).getDistanceCM());
     	SmartDashboard.putNumber("Side right sonic", sensorBase.getUltrasonicSensor(3).getDistanceCM());
-    	SmartDashboard.putNumber("Tilt", sensorBase.getI2CAccelerometer().getX());
     	
-    	SmartDashboard.putBoolean("Camera On", sensorBase.getCamera().isOn());
+    	//display tilt and tote level
+    	SmartDashboard.putNumber("Tilt", sensorBase.getAthenaAccelerometer().getX());
+    	SmartDashboard.putNumber("Tote Level", flapper.getCurrentSwitch());
+    	
+    	//display status of camera
+    	SmartDashboard.putBoolean("Upper Camera On", sensorBase.getCamera().isOn());
     	
     }
     /**
