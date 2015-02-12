@@ -20,6 +20,7 @@ import org.usfirst.frc.team619.logic.actions.RetrieveThreeTotesTank;
 import org.usfirst.frc.team619.logic.actions.RetrieveToteAndCanTank;
 import org.usfirst.frc.team619.logic.actions.RetrieveToteTank;
 import org.usfirst.frc.team619.logic.actions.StackTotesTank;
+import org.usfirst.frc.team619.logic.mapping.FlapperMappingThread;
 import org.usfirst.frc.team619.logic.mapping.SRXTankDriveMappingThread;
 import org.usfirst.frc.team619.logic.mapping.SensorBaseMappingThread;
 import org.usfirst.frc.team619.subsystems.Flapper;
@@ -54,6 +55,7 @@ public class Jenga extends IterativeRobot {
 	RetrieveToteAndCanTank retrieveToteAndCan;
 	
 	//Logic
+	FlapperMappingThread flapperThread;
 	SensorBaseMappingThread sensorThread;
 	SRXTankDriveMappingThread driveThread;
 	
@@ -182,14 +184,16 @@ public class Jenga extends IterativeRobot {
     public void teleopInit(){
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
     	
+    	flapperThread = new FlapperMappingThread(flapper, driverStation, 0, threadManager);
     	sensorThread = new SensorBaseMappingThread(sensorBase, driverStation, 0, threadManager);
     	driveThread = new SRXTankDriveMappingThread(driveBase, driverStation, 0, threadManager);
     
     	//start threads
+    	flapperThread.start();
     	sensorThread.start();
     	driveThread.start();
     	
-    	//start cameras again because they should be killed by threadManager
+    	//start cameras again because they should be killed by threadManager after autonomous ends
     	sensorBase.startCamera("cam0");
     	sensorBase.startNetworkCamera();
     	
