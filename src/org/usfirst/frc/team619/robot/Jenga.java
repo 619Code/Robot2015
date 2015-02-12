@@ -20,6 +20,7 @@ import org.usfirst.frc.team619.logic.actions.RetrieveThreeTotesTank;
 import org.usfirst.frc.team619.logic.actions.RetrieveToteAndCanTank;
 import org.usfirst.frc.team619.logic.actions.RetrieveToteTank;
 import org.usfirst.frc.team619.logic.actions.StackTotesTank;
+import org.usfirst.frc.team619.logic.mapping.FlapperMappingThread;
 import org.usfirst.frc.team619.logic.mapping.SRXTankDriveMappingThread;
 import org.usfirst.frc.team619.logic.mapping.SensorBaseMappingThread;
 import org.usfirst.frc.team619.subsystems.Flapper;
@@ -56,6 +57,7 @@ public class Jenga extends IterativeRobot {
 	//Logic
 	SensorBaseMappingThread sensorThread;
 	SRXTankDriveMappingThread driveThread;
+	//FlapperMappingThread flapperThread;
 	
 	//Subsystems
 	SRXDriveBase driveBase;
@@ -142,6 +144,7 @@ public class Jenga extends IterativeRobot {
         driveBase = new SRXDriveBase(driveLeft, driveRight);
         flapper = new Flapper(lift1, lift2, hands, bottom, levelOne, levelTwo, levelThree, top);
         
+        
         //SmartDashboard setup (all things dealing with the SmartDashboard initialized here)
         autoSelect = new AutonomousSelector();
         
@@ -184,10 +187,12 @@ public class Jenga extends IterativeRobot {
     	
     	sensorThread = new SensorBaseMappingThread(sensorBase, driverStation, 0, threadManager);
     	driveThread = new SRXTankDriveMappingThread(driveBase, driverStation, 0, threadManager);
+    	//flapperThread = new FlapperMappingThread(flapper,driverStation,0,threadManager);
     
     	//start threads
     	sensorThread.start();
     	driveThread.start();
+    	//flapperThread.start();
     	
     	//start cameras again because they should be killed by threadManager
     	sensorBase.startCamera("cam0");
@@ -207,11 +212,11 @@ public class Jenga extends IterativeRobot {
     public void teleopPeriodic() {
     	
     	//flipping override
-    	if(sensorBase.getAthenaAccelerometer().getX() > 10){
+    	if(sensorBase.getAthenaAccelerometer().getZ() > 10){
     		
     		flapper.setLevel(0);
     		
-    		while(sensorBase.getAthenaAccelerometer().getX() > 10)
+    		while(sensorBase.getAthenaAccelerometer().getZ() > 10)
     			driveBase.drive(-1);
     		
     	}
@@ -223,7 +228,7 @@ public class Jenga extends IterativeRobot {
     	SmartDashboard.putNumber("Side right sonic", sensorBase.getUltrasonicSensor(3).getDistanceCM());
     	
     	//display tilt and tote level
-    	SmartDashboard.putNumber("Tilt", sensorBase.getAthenaAccelerometer().getX());
+    	SmartDashboard.putNumber("Tilt", sensorBase.getAthenaAccelerometer().getZ());
     	SmartDashboard.putNumber("Tote Level", flapper.getCurrentSwitch());
     	
     	//display status of camera

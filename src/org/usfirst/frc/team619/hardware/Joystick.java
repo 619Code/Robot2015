@@ -47,6 +47,7 @@ public class Joystick {
     
     public Joystick(int id){
         joystick = new edu.wpi.first.wpilibj.Joystick(id);
+        joystick.setAxisChannel(edu.wpi.first.wpilibj.Joystick.AxisType.kTwist, 3);
         reversedAxis = new boolean[Axis.MAX_AXIS_VALUE];
     }
     

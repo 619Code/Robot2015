@@ -71,10 +71,13 @@ public class FlapperMappingThread extends RobotThread{
 			flapper.setLiftSpeed(0);
 		}
 		
-		//Red Button on right joystick for manual manipulation of Lift
+		// Red Button on right joystick for manual manipulation of Lift
 		if(driverStation.getFourthJoystick().getButton(Joystick.Button.BUTTON2)){
 			flapper.setLiftSpeed(liftSpeed);
 		}
+//		double lifts= driverStation.getFourthJoystick().getAxis(Joystick.Axis.AXIS_TWIST);
+//	    flapper.setLiftSpeed(lifts);
+//	    System.out.println("LIFT SPEED:" + lifts);
 		
 	}
 	
