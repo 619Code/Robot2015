@@ -57,7 +57,7 @@ public class Jenga extends IterativeRobot {
 	//Logic
 	SensorBaseMappingThread sensorThread;
 	SRXTankDriveMappingThread driveThread;
-	//FlapperMappingThread flapperThread;
+	FlapperMappingThread flapperThread;
 	
 	//Subsystems
 	SRXDriveBase driveBase;
@@ -187,12 +187,12 @@ public class Jenga extends IterativeRobot {
     	
     	sensorThread = new SensorBaseMappingThread(sensorBase, driverStation, 0, threadManager);
     	driveThread = new SRXTankDriveMappingThread(driveBase, driverStation, 0, threadManager);
-    	//flapperThread = new FlapperMappingThread(flapper,driverStation,0,threadManager);
+    	flapperThread = new FlapperMappingThread(flapper,driverStation,0,threadManager);
     
     	//start threads
     	sensorThread.start();
     	driveThread.start();
-    	//flapperThread.start();
+    	flapperThread.start();
     	
     	//start cameras again because they should be killed by threadManager
     	sensorBase.startCamera("cam0");
