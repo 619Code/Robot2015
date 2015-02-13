@@ -5,6 +5,8 @@ import org.usfirst.frc.team619.hardware.LimitSwitch;
 import org.usfirst.frc.team619.hardware.Solenoid;
 import org.usfirst.frc.team619.hardware.TalonCan;
 
+import edu.wpi.first.wpilibj.CANTalon;
+
 public class Flapper {
 	
 	private int lastSwitch = 0;
@@ -37,6 +39,11 @@ public class Flapper {
 		this.levelTwoSwitch = levelTwoSwitch;
 		this.levelThreeSwitch = levelThreeSwitch;
 		this.topSwitch = topSwitch;
+		
+		lift2.setReversed(true);
+		lift2.changeControlMode(CANTalon.ControlMode.Follower);
+		lift2.set(lift1.getID());
+		
 	}
 
 	public boolean bottomSwitchValue(){
@@ -61,7 +68,6 @@ public class Flapper {
 	
 	public void setLiftSpeed(double speed){
 		lift1.set(speed);
-		lift2.set(speed);
 	}
 	
 	public void setLevel(int level){

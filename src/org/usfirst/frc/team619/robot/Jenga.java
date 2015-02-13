@@ -186,12 +186,12 @@ public class Jenga extends IterativeRobot {
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
     	
     	sensorThread = new SensorBaseMappingThread(sensorBase, driverStation, 0, threadManager);
-    	driveThread = new SRXTankDriveMappingThread(driveBase, driverStation, 0, threadManager);
+    	//driveThread = new SRXTankDriveMappingThread(driveBase, driverStation, 0, threadManager);
     	flapperThread = new FlapperMappingThread(flapper,driverStation,0,threadManager);
     
     	//start threads
     	sensorThread.start();
-    	driveThread.start();
+    	//driveThread.start();
     	flapperThread.start();
     	
     	//start cameras again because they should be killed by threadManager
