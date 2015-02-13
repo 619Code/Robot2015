@@ -172,7 +172,7 @@ public class Jenga extends IterativeRobot {
     	
     	//retrieve selected autonomous and run it
     	SmartDashboard.putString("Selected Autonomous", autoSelect.getChoice().getName());
-    	autoSelect.startChoice();
+    	//autoSelect.startChoice();
     	
     	//start cameras
     	sensorBase.startCamera("cam0");
@@ -196,7 +196,7 @@ public class Jenga extends IterativeRobot {
     	
     	//start cameras again because they should be killed by threadManager
     	sensorBase.startCamera("cam0");
-    	sensorBase.startNetworkCamera();
+    	//sensorBase.startNetworkCamera();
     	
     }
     /**
@@ -211,15 +211,15 @@ public class Jenga extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	
-    	//flipping override
-    	if(sensorBase.getAthenaAccelerometer().getZ() > 10){
-    		
-    		flapper.setLevel(0);
-    		
-    		while(sensorBase.getAthenaAccelerometer().getZ() > 10)
-    			driveBase.drive(-1);
-    		
-    	}
+//    	//flipping override
+//    	if(sensorBase.getAthenaAccelerometer().getZ() > 10){
+//    		
+//    		flapper.setLevel(0);
+//    		
+//    		while(sensorBase.getAthenaAccelerometer().getZ() > 10)
+//    			driveBase.drive(-1);
+//    		
+//    	}
     	
         //display ultrasonic sensor values during match
     	SmartDashboard.putNumber("Front left sonic", sensorBase.getUltrasonicSensor(1).getDistanceCM());
@@ -230,6 +230,13 @@ public class Jenga extends IterativeRobot {
     	//display tilt and tote level
     	SmartDashboard.putNumber("Tilt", sensorBase.getAthenaAccelerometer().getZ());
     	SmartDashboard.putNumber("Tote Level", flapper.getCurrentSwitch());
+    	
+    	//display value of limit switches
+    	SmartDashboard.putBoolean("Top Switch", flapper.topSwitchValue());
+    	SmartDashboard.putBoolean("Level 3", flapper.levelThreeSwitchValue());
+    	SmartDashboard.putBoolean("Level 2", flapper.levelTwoSwitchValue());
+    	SmartDashboard.putBoolean("Level 1", flapper.levelOneSwitchValue());
+    	SmartDashboard.putBoolean("Bottom Switch", flapper.bottomSwitchValue());
     	
     	//display status of camera
     	SmartDashboard.putBoolean("Upper Camera On", sensorBase.getCamera().isOn());
@@ -245,5 +252,8 @@ public class Jenga extends IterativeRobot {
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
     }
     
+    public void disabledPeriodic(){}
+    
+    public void disabledContinuous(){}
     
 }

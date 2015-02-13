@@ -93,9 +93,10 @@ public class Flapper {
 		}
 		
 		while(!stopLift){
-			if(currentLimit.get())
+			if(currentLimit.get()){
 				stopLift = true;
-			else if(lastSwitch > level)
+				setLiftSpeed(0);
+			}else if(lastSwitch > level)
 				setLiftSpeed(-speed);
 			else if(lastSwitch < level)
 				setLiftSpeed(speed);
@@ -103,7 +104,6 @@ public class Flapper {
 		
 		if(stopLift){
 			lastSwitch = level;
-			stopLift = false;
 		}
 		
 	}
