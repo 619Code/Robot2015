@@ -40,7 +40,6 @@ public class Flapper {
 		this.levelThreeSwitch = levelThreeSwitch;
 		this.topSwitch = topSwitch;
 		
-		lift2.setReversed(true);
 		lift2.changeControlMode(CANTalon.ControlMode.Follower);
 		lift2.set(lift1.getID());
 		
