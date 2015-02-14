@@ -34,6 +34,9 @@ public class FlapperMappingThread extends RobotThread{
 		double scalePercent = driverStation.getFourthJoystick().getAxis(Joystick.Axis.AXIS_Z);
 		double yAxis = driverStation.getFourthJoystick().getAxis(Joystick.Axis.AXIS_Y);
 		
+		if(scalePercent < 0.3)
+			scalePercent = 0.3;
+		
 		double liftSpeed = yAxis * scalePercent;
 		
 		//Button 2 (red button on saitek aviators) shoots out both pneumatics
@@ -57,18 +60,19 @@ public class FlapperMappingThread extends RobotThread{
 		}
 		
 		//Button 7 (left toggle switch (toggle up) also labeled T3) move lift to height needed to move around three totes
-		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON5)){
+		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON7)){
 			flapper.setLevel(3);
 		}
 		
 		//Button 8 (left toggle switch (toggle down) also labeled T4) move lift to height needed to move around four totes 
-		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON5)){
+		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON8)){
 			flapper.setLevel(4);
 		}
 		
 		//Trigger on right joystick for Lift override
-		if(driverStation.getFourthJoystick().getButton(Joystick.Button.BUTTON1)){
+		if(driverStation.getFourthJoystick().getButton(Joystick.Button.TRIGGER)){
 			flapper.setLiftSpeed(0);
+			flapper.setLevel(flapper.getCurrentSwitch());//ensures that the lift does not continue once trigger is released
 		}
 		
 		// Red Button on right joystick for manual manipulation of Lift

@@ -29,6 +29,8 @@ public class Flapper {
 	private LimitSwitch levelThreeSwitch;
 	private LimitSwitch topSwitch;
 	
+	
+	
 	public Flapper(TalonCan lift1, TalonCan lift2, DualInputSolenoid hands, LimitSwitch bottomSwitch, LimitSwitch levelOneSwitch, LimitSwitch levelTwoSwitch, LimitSwitch levelThreeSwitch,
 				LimitSwitch topSwitch){
 		this.lift1 = lift1;
@@ -42,6 +44,18 @@ public class Flapper {
 		
 		lift2.changeControlMode(CANTalon.ControlMode.Follower);
 		lift2.set(lift1.getID());
+		
+		lift1.changeControlMode(CANTalon.ControlMode.PercentVbus);
+		lift1.setReverseSoftLimit(-25000);
+		lift1.enableReverseSoftLimit(false);
+
+		//lift1.changeControlMode(CANTalon.ControlMode.Position);
+		//lift1.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+		//lift1.setPID(0.01, 1, 0);
+		//lift1.enableControl();
+		//lift1.setForwardSoftLimit(192247);    //!!!!!!!!!!!!!!!!!!!!!!! very top == 394751
+		//lift1.setForwardSoftLimit(9900);
+		//lift1.setReverseSoftLimit(-9900);
 		
 	}
 
@@ -74,7 +88,7 @@ public class Flapper {
 		if(level == lastSwitch)
 			return;
 			
-		double speed = 1;
+		double speed = 0.5;
 		boolean stopLift = false;
 		
 		LimitSwitch currentLimit = null;
@@ -96,14 +110,20 @@ public class Flapper {
 			if(currentLimit.get()){
 				stopLift = true;
 				setLiftSpeed(0);
+				System.out.println("STOPPING!!!!");
 			}else if(lastSwitch > level)
 				setLiftSpeed(-speed);
 			else if(lastSwitch < level)
 				setLiftSpeed(speed);
+			
+			System.out.println("Going to: " + level);
+			System.out.println("Limit reached: " + currentLimit.get());
+			
 		}
 		
 		if(stopLift){
 			lastSwitch = level;
+			System.out.println("Done.");
 		}
 		
 	}
@@ -152,6 +172,10 @@ public class Flapper {
 	
 	public int getCurrentSwitch(){
 		return lastSwitch;
+	}
+	
+	public void setCurrentSwitch(int switchNum){
+		lastSwitch = switchNum;
 	}
 	
 }

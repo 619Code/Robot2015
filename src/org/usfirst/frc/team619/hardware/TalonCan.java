@@ -13,53 +13,28 @@ import edu.wpi.first.wpilibj.TalonSRX;
  * @author Student
  */
 
-public class TalonCan {
-
-	CANTalon talon;
+public class TalonCan extends CANTalon {
 	
 	public TalonCan(int canID){
-		talon = new CANTalon(canID);
+		super(canID);
 	}
 	
 	public int getID(){
-		return talon.getDeviceID();
+		return getDeviceID();
 	}
-	
-	public double getOutputVoltage(){
-		return talon.getOutputVoltage();
-	}
-	
+		
 	public double getInputVoltage(){
-		return talon.getBusVoltage();
-	}
-	
-	public double getOutputCurrent(){
-		return talon.getOutputCurrent();  
-	}
-	
-	public double getSpeed(){
-		return talon.getSpeed();
-	}
-	
-	public void set(double speed){
-		talon.set(speed);
-	}
-	
-	//to be used in conjunction with changeControlMode
-	public void set(int id){
-		talon.set(id);
+		return getBusVoltage();
 	}
 	
 	public void setReversed(boolean reversed){
-		talon.reverseOutput(reversed);
+		reverseOutput(reversed);
 	}
 	
-	public void setFeedbackDevice(FeedbackDevice device){
-		talon.setFeedbackDevice(device);
-	}
-	
-	public void changeControlMode(ControlMode controlMode){
-		talon.changeControlMode(controlMode);
+	@Override
+	public void set(double v) {
+		//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  set: " + v);
+		super.set(v);
 	}
 	
 }

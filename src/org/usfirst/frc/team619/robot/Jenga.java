@@ -11,6 +11,7 @@ package org.usfirst.frc.team619.robot;
 import org.usfirst.frc.team619.hardware.AnalogUltrasonic;
 import org.usfirst.frc.team619.hardware.AthenaAccelerometer;
 import org.usfirst.frc.team619.hardware.DualInputSolenoid;
+import org.usfirst.frc.team619.hardware.Joystick;
 import org.usfirst.frc.team619.hardware.LimitSwitch;
 import org.usfirst.frc.team619.hardware.TalonCan;
 import org.usfirst.frc.team619.logic.AutonomousSelector;
@@ -110,11 +111,11 @@ public class Jenga extends IterativeRobot {
         //plug into pwm section on Athena
         
         //plug into DIO on Athena
-        bottom = new LimitSwitch(0);
-        levelOne = new LimitSwitch(1);
+        bottom = new LimitSwitch(4);
+        levelOne = new LimitSwitch(3);
         levelTwo = new LimitSwitch(2);
-        levelThree = new LimitSwitch(3);
-        top = new LimitSwitch(4);
+        levelThree = new LimitSwitch(1);
+        top = new LimitSwitch(0);
         
         //plug into Analog Input on Athena
         leftSonic = new AnalogUltrasonic(0);
@@ -132,8 +133,8 @@ public class Jenga extends IterativeRobot {
         driveLeft = new TalonCan(1);
         driveRight = new TalonCan(2);
         
-        lift1 = new TalonCan(3);
-        lift2 = new TalonCan(4);
+        lift1 = new TalonCan(4);      // <<<-------[[[ talon 4 has the encoder connected to it
+        lift2 = new TalonCan(3);
         
         //subsystems
         sensorBase = new SensorBase(accel);
@@ -169,7 +170,11 @@ public class Jenga extends IterativeRobot {
      */
     public void autonomousInit(){
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
-    	
+    	System.out.println("**************************autonomousInit( )************************************");
+    	System.out.println(">>>>>>>>> " + lift1.getEncPosition( ));
+    	System.out.println(">>>>>>>>> " + lift1.getPosition());
+    	//lift1.set(3000);
+	
     	//retrieve selected autonomous and run it
     	SmartDashboard.putString("Selected Autonomous", autoSelect.getChoice().getName());
     	//autoSelect.startChoice();
@@ -177,7 +182,6 @@ public class Jenga extends IterativeRobot {
     	//start cameras
     	sensorBase.startCamera("cam0");
     	sensorBase.startNetworkCamera();
-    	
     }
     /**
      * This function is called when teleop is initialized
@@ -196,7 +200,7 @@ public class Jenga extends IterativeRobot {
     	
     	//start cameras again because they should be killed by threadManager
     	sensorBase.startCamera("cam0");
-    	//sensorBase.startNetworkCamera();
+    	//sensorBase.startNetworkCamera();\
     	
     }
     /**
@@ -205,12 +209,17 @@ public class Jenga extends IterativeRobot {
     public void autonomousPeriodic() {
     	//runs the autonomous that was chosen using SmartDashboard (may not need this)
 //    	Scheduler.getInstance().run();
+    	System.out.println("aPOSITION:  " + lift1.getPosition( ) + "/" + lift2.getPosition( ));
     }
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
     	
+    	if ( lift1.getPosition( ) >= 393874.0 ) { lift1.set(0); }
+    	//if ( lift1.getPosition( ) <= -250000.0 ) { lift1.set(0); }
+    	// 393874   ----   between level3 & level4
+ 
 //    	//flipping override
 //    	if(sensorBase.getAthenaAccelerometer().getZ() > 10){
 //    		
@@ -220,7 +229,8 @@ public class Jenga extends IterativeRobot {
 //    			driveBase.drive(-1);
 //    		
 //    	}
-    	
+    	//System.out.println("tPOSITION:  " + lift1.getPosition( ));
+
         //display ultrasonic sensor values during match
     	SmartDashboard.putNumber("Front left sonic", sensorBase.getUltrasonicSensor(1).getDistanceCM());
     	SmartDashboard.putNumber("Front right sonic", sensorBase.getUltrasonicSensor(2).getDistanceCM());
