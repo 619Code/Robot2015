@@ -30,7 +30,7 @@ public class FlapperMappingThread extends RobotThread{
 
 	@Override
 	protected void cycle() {
-		
+				
 		double scalePercent = driverStation.getFourthJoystick().getAxis(Joystick.Axis.AXIS_Z);
 		double yAxis = driverStation.getFourthJoystick().getAxis(Joystick.Axis.AXIS_Y);
 		
@@ -54,31 +54,40 @@ public class FlapperMappingThread extends RobotThread{
 			flapper.setLevel(1);
 		}
 		
-		//Button 6 (far left toggle switch (toggle down) also labeled T2) move lift to height needed to move around two totes 
-		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON6)){
+		//Button 7 (left toggle switch (toggle up) also labeled T3) move lift to height needed to move around two totes 
+		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON7)){
 			flapper.setLevel(2);
 		}
 		
-		//Button 7 (left toggle switch (toggle up) also labeled T3) move lift to height needed to move around three totes
-		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON7)){
+		//Button 9 (right toggle switch (toggle up) also labeled T5) move lift to height needed to move around three totes
+		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON9)){
 			flapper.setLevel(3);
 		}
 		
-		//Button 8 (left toggle switch (toggle down) also labeled T4) move lift to height needed to move around four totes 
-		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON8)){
+		//Button 11 (far right toggle switch (toggle up) also labeled T7) move lift to height needed to move around four totes 
+		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON11)){
 			flapper.setLevel(4);
 		}
 		
 		//Trigger on right joystick for Lift override
 		if(driverStation.getFourthJoystick().getButton(Joystick.Button.TRIGGER)){
-			flapper.setLiftSpeed(0);
-			flapper.setLevel(flapper.getCurrentSwitch());//ensures that the lift does not continue once trigger is released
+			flapper.interruptSetLevel();
 		}
 		
 		// Red Button on right joystick for manual manipulation of Lift
 		if(driverStation.getFourthJoystick().getButton(Joystick.Button.BUTTON2)){
-			flapper.setLiftSpeed(liftSpeed);
-		}
+			if(liftSpeed < 0 && flapper.topSwitchValue()){
+				flapper.setLiftSpeed(liftSpeed);
+			}else if(liftSpeed > 0 && flapper.bottomSwitchValue()){
+				flapper.setLiftSpeed(liftSpeed);
+			}else if(!flapper.topSwitchValue() && !flapper.bottomSwitchValue()){
+				flapper.setLiftSpeed(liftSpeed);
+			}else{
+				flapper.setLiftSpeed(0);
+			}
+			
+		}else
+			flapper.setLiftSpeed(0);
 //		double lifts= driverStation.getFourthJoystick().getAxis(Joystick.Axis.AXIS_TWIST);
 //	    flapper.setLiftSpeed(lifts);
 //	    System.out.println("LIFT SPEED:" + lifts);

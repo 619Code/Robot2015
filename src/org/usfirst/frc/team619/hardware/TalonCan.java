@@ -14,8 +14,10 @@ import edu.wpi.first.wpilibj.TalonSRX;
  */
 
 public class TalonCan extends CANTalon {
-	
 	public TalonCan(int canID){
+		super(canID);
+	}
+	public TalonCan(int canID,boolean doLogging) {
 		super(canID);
 	}
 	
@@ -30,11 +32,5 @@ public class TalonCan extends CANTalon {
 	public void setReversed(boolean reversed){
 		reverseOutput(reversed);
 	}
-	
-	@Override
-	public void set(double v) {
-		//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  set: " + v);
-		super.set(v);
-	}
-	
+		
 }
