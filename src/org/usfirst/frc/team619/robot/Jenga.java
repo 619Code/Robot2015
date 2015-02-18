@@ -8,9 +8,12 @@
 
 package org.usfirst.frc.team619.robot;
 
+import edu.wpi.first.wpilibj.Preferences;
+
 import org.usfirst.frc.team619.hardware.AnalogUltrasonic;
 import org.usfirst.frc.team619.hardware.AthenaAccelerometer;
 import org.usfirst.frc.team619.hardware.DualInputSolenoid;
+import org.usfirst.frc.team619.hardware.Joystick;
 import org.usfirst.frc.team619.hardware.LimitSwitch;
 import org.usfirst.frc.team619.hardware.TalonCan;
 import org.usfirst.frc.team619.logic.AutonomousSelector;
@@ -55,15 +58,15 @@ public class Jenga extends IterativeRobot {
 	RetrieveToteAndCanTank retrieveToteAndCan;
 	
 	//Logic
-	FlapperMappingThread flapperThread;
 	SensorBaseMappingThread sensorThread;
 	SRXTankDriveMappingThread driveThread;
+	FlapperMappingThread flapperThread;
 	
 	//Subsystems
 	SRXDriveBase driveBase;
 	SensorBase sensorBase;
 	Flapper flapper;
-	
+
 	//Hardware
 	
 	AthenaAccelerometer accel;
@@ -86,6 +89,9 @@ public class Jenga extends IterativeRobot {
 	TalonCan lift2;
 	
 	DualInputSolenoid hands;
+	
+	final boolean usePreferences = false;
+	private Preferences prefs = Preferences.getInstance( );
 	
 	/**
      * This function is run when the robot is first started up and should be
@@ -110,11 +116,11 @@ public class Jenga extends IterativeRobot {
         //plug into pwm section on Athena
         
         //plug into DIO on Athena
-        bottom = new LimitSwitch(0);
-        levelOne = new LimitSwitch(1);
+        bottom = new LimitSwitch(4);
+        levelOne = new LimitSwitch(3);
         levelTwo = new LimitSwitch(2);
-        levelThree = new LimitSwitch(3);
-        top = new LimitSwitch(4);
+        levelThree = new LimitSwitch(1);
+        top = new LimitSwitch(0);
         
         //plug into Analog Input on Athena
         leftSonic = new AnalogUltrasonic(0);
@@ -132,8 +138,8 @@ public class Jenga extends IterativeRobot {
         driveLeft = new TalonCan(1);
         driveRight = new TalonCan(2);
         
-        lift1 = new TalonCan(3);
-        lift2 = new TalonCan(4);
+        lift1 = new TalonCan(4,true);      // <<<-------[[[ talon 4 has the encoder connected to it
+        lift2 = new TalonCan(3);
         
         //subsystems
         sensorBase = new SensorBase(accel);
@@ -142,7 +148,8 @@ public class Jenga extends IterativeRobot {
         sensorBase.addUltrasonicSensor(frontLeftSonic);
         sensorBase.addUltrasonicSensor(frontRightSonic);
         driveBase = new SRXDriveBase(driveLeft, driveRight);
-        flapper = new Flapper(lift1, lift2, hands, bottom, levelOne, levelTwo, levelThree, top);
+        flapper = new Flapper(driverStation, lift1, lift2, hands, bottom, levelOne, levelTwo, levelThree, top);
+        
         
         //SmartDashboard setup (all things dealing with the SmartDashboard initialized here)
         autoSelect = new AutonomousSelector();
@@ -161,6 +168,21 @@ public class Jenga extends IterativeRobot {
         
         SmartDashboard.putData("Autonomous Selector", autoSelect.getAutoChooser());
         
+        //    This putInt(...) should only be done once... probably, per RoboRIO imaging...
+    	//prefs.putInt("team", 619);
+        //    wait until persistent RoboRIO preferences are available, by polling on the team value...
+        //    WPIlib Preferences seem to depend upon IPC, and it takes some amount of time for the
+        //    communications channels to be opened...
+        if ( usePreferences ) {
+        	int count = 0;
+        	while ( prefs.getInt("team", 0) != 619 ) {
+        		if ( count++ % 50 == 0 ) System.out.println("Waiting for RoboRIO Preferences...");
+        		try {
+        			Thread.sleep(100);
+        		} catch (InterruptedException e) {}
+        	}
+        	flapper.initializeTalonPosition( );
+        }
     }
 
     /**
@@ -168,57 +190,102 @@ public class Jenga extends IterativeRobot {
      */
     public void autonomousInit(){
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
-    	
+    	System.out.println("**************************autonomousInit( )************************************");
+    	System.out.println(">>>>>>>>>     pos " + lift1.getPosition());
+    	System.out.println("*******************************************************************************");
+
     	//retrieve selected autonomous and run it
     	SmartDashboard.putString("Selected Autonomous", autoSelect.getChoice().getName());
-    	autoSelect.startChoice();
+    	//autoSelect.startChoice();
     	
     	//start cameras
     	sensorBase.startCamera("cam0");
     	sensorBase.startNetworkCamera();
-    	
+    	//lift1.set(-0.25);
+    	//////  ]]]]]]]=========>>>> to reset TalonCan position for lift, call: flapper.setPosition(0.0);
+    	//lift1.set(0.25);
+    	//lift1.set(-0.25);
     }
     /**
-     * This function is called when teleop is initialized
+     * This function is called when teleop is initialized 
      */
     public void teleopInit(){
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
     	
-    	flapperThread = new FlapperMappingThread(flapper, driverStation, 0, threadManager);
     	sensorThread = new SensorBaseMappingThread(sensorBase, driverStation, 0, threadManager);
     	driveThread = new SRXTankDriveMappingThread(driveBase, driverStation, 0, threadManager);
+    	flapperThread = new FlapperMappingThread(flapper,driverStation,0,threadManager);
     
     	//start threads
-    	flapperThread.start();
     	sensorThread.start();
     	driveThread.start();
+    	flapperThread.start();
     	
-    	//start cameras again because they should be killed by threadManager after autonomous ends
-    	sensorBase.startCamera("cam0");
-    	sensorBase.startNetworkCamera();
+    	//start cameras again because they should be killed by threadManager
+    	//sensorBase.startCamera("cam0");
+    	//sensorBase.startNetworkCamera();
     	
     }
     /**
      * This function is called periodically (about every 20 ms) during autonomous
      */
     public void autonomousPeriodic() {
+    	// ensures that the talon position is stored in the preferences
+    	if ( usePreferences ) flapper.updateTalonPosition( );
     	//runs the autonomous that was chosen using SmartDashboard (may not need this)
 //    	Scheduler.getInstance().run();
+    	//System.out.println("aPOSITION:  " + lift1.getPosition( ) + "/" + lift2.getPosition( ));
+    	
+    	//display motor speeds
+    	SmartDashboard.putNumber("Left Motor", driveBase.getLeftTalon().getSpeed());
+    	SmartDashboard.putNumber("Right Motor", driveBase.getRightTalon().getSpeed());
+    	
+    	//display ultrasonic sensor values during match
+    	SmartDashboard.putNumber("Front left sonic", sensorBase.getUltrasonicSensor(1).getDistanceCM());
+    	SmartDashboard.putNumber("Front right sonic", sensorBase.getUltrasonicSensor(2).getDistanceCM());
+    	SmartDashboard.putNumber("Side left sonic", sensorBase.getUltrasonicSensor(0).getDistanceCM());
+    	SmartDashboard.putNumber("Side right sonic", sensorBase.getUltrasonicSensor(3).getDistanceCM());
+    	
+    	//display tilt and tote level
+    	SmartDashboard.putNumber("Tilt", sensorBase.getAthenaAccelerometer().getZ());
+    	SmartDashboard.putNumber("Tote Level", flapper.getCurrentSwitch());
+    	
+    	//display value of limit switches
+    	SmartDashboard.putBoolean("Top Switch", flapper.topSwitchValue());
+    	SmartDashboard.putBoolean("Level 3", flapper.levelThreeSwitchValue());
+    	SmartDashboard.putBoolean("Level 2", flapper.levelTwoSwitchValue());
+    	SmartDashboard.putBoolean("Level 1", flapper.levelOneSwitchValue());
+    	SmartDashboard.putBoolean("Bottom Switch", flapper.bottomSwitchValue());
+    	
+    	//display status of camera
+    	//SmartDashboard.putBoolean("Upper Camera On", sensorBase.getCamera().isOn());
+    	
     }
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+    	// ensures that the talon position is stored in the preferences
+    	if ( usePreferences ) flapper.updateTalonPosition( );
+    	//if ( lift1.getPosition( ) >= 393874.0 ) { lift1.set(0); }
+    	//if ( lift1.getPosition( ) <= -250000.0 ) { lift1.set(0); }
+    	// 393874   ----   between level3 & level4
+ 
+//    	//flipping override
+//    	if(sensorBase.getAthenaAccelerometer().getZ() > 10){
+//    		
+//    		flapper.setLevel(0);
+//    		
+//    		while(sensorBase.getAthenaAccelerometer().getZ() > 10)
+//    			driveBase.drive(-1);
+//    		
+//    	}
     	
-    	//flipping override
-    	if(sensorBase.getAthenaAccelerometer().getX() > 10){
-    		
-    		flapper.setLevel(0);
-    		
-    		while(sensorBase.getAthenaAccelerometer().getX() > 10)
-    			driveBase.drive(-1);
-    		
-    	}
+    	//System.out.println("tPOSITION:  " + lift1.getPosition( ));
+
+    	//display motor speeds
+    	SmartDashboard.putNumber("Left Motor", driveBase.getLeftTalon().getSpeed());
+    	SmartDashboard.putNumber("Right Motor", driveBase.getRightTalon().getSpeed());
     	
         //display ultrasonic sensor values during match
     	SmartDashboard.putNumber("Front left sonic", sensorBase.getUltrasonicSensor(1).getDistanceCM());
@@ -227,11 +294,18 @@ public class Jenga extends IterativeRobot {
     	SmartDashboard.putNumber("Side right sonic", sensorBase.getUltrasonicSensor(3).getDistanceCM());
     	
     	//display tilt and tote level
-    	SmartDashboard.putNumber("Tilt", sensorBase.getAthenaAccelerometer().getX());
+    	SmartDashboard.putNumber("Tilt", sensorBase.getAthenaAccelerometer().getZ());
     	SmartDashboard.putNumber("Tote Level", flapper.getCurrentSwitch());
     	
+    	//display value of limit switches
+    	SmartDashboard.putBoolean("Top Switch", flapper.topSwitchValue());
+    	SmartDashboard.putBoolean("Level 3", flapper.levelThreeSwitchValue());
+    	SmartDashboard.putBoolean("Level 2", flapper.levelTwoSwitchValue());
+    	SmartDashboard.putBoolean("Level 1", flapper.levelOneSwitchValue());
+    	SmartDashboard.putBoolean("Bottom Switch", flapper.bottomSwitchValue());
+    	
     	//display status of camera
-    	SmartDashboard.putBoolean("Upper Camera On", sensorBase.getCamera().isOn());
+    	//SmartDashboard.putBoolean("Upper Camera On", sensorBase.getCamera().isOn());
     	
     }
     /**
@@ -241,8 +315,13 @@ public class Jenga extends IterativeRobot {
     
     }
     public void disabledInit(){
+    	// ensure that the latest position is cached to flash...
+    	if ( usePreferences ) flapper.storeTalonPosition( );
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
     }
     
+    public void disabledPeriodic(){}
     
+    public void disabledContinuous(){}
+        
 }

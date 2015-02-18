@@ -10,7 +10,7 @@ public class NetworkCamera {
 
 	private AxisCamera camera;
 	
-	private String cameraHost = "10.6.19.2";
+	private String cameraHost = "10.6.19.3";
 	
 	public NetworkCamera(){
 		camera = new AxisCamera(cameraHost);

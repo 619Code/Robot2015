@@ -35,7 +35,7 @@ public class SRXTankDriveMappingThread extends RobotThread {
             leftScalePercent = 0.3;
         }
 
-        double rightPercent = driverStation.getRightJoystick().getAxis(Joystick.Axis.AXIS_Y) * leftScalePercent;
+        double rightPercent = driverStation.getRightJoystick().getAxis(Joystick.Axis.AXIS_Y) * -leftScalePercent;
         double leftPercent = driverStation.getLeftJoystick().getAxis(Joystick.Axis.AXIS_Y) * leftScalePercent;
 
         driveBase.getLeftTalon().set(leftPercent);
@@ -47,9 +47,14 @@ public class SRXTankDriveMappingThread extends RobotThread {
             driveBase.getRightTalon2().set(rightPercent);
             if(DEBUG) System.out.println("[TalonTankDriveMappingThread] Using 2nd motors");
         }
+        
+//        double lifts= driverStation.getRightJoystick().getAxis(Joystick.Axis.AXIS_TWIST);
+//	    driveBase.getLiftTalon1().set(lifts);
+//	    driveBase.getLiftTalon2().set(lifts);
+//	    System.out.println("LIFT SPEED:" + lifts);
        
         if(DEBUG) {
-            System.out.println("[TalonTankDriveMappingThread] Left Percent: " + leftPercent + " | Right Percent: " + rightPercent);
+            System.out.println("[TalonTankDriveMappingThread] Left Percent: " + leftPercent + " | Right Percent: " + rightPercent );
         }
     }
 }

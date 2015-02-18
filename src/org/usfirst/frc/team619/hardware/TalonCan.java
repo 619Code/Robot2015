@@ -13,41 +13,24 @@ import edu.wpi.first.wpilibj.TalonSRX;
  * @author Student
  */
 
-public class TalonCan {
-
-	CANTalon talon;
-	TalonSRX talonSRX;
-	
+public class TalonCan extends CANTalon {
 	public TalonCan(int canID){
-		talon = new CANTalon(canID);
+		super(canID);
+	}
+	public TalonCan(int canID,boolean doLogging) {
+		super(canID);
 	}
 	
-	public void set(double speed){
-		talon.set(speed);
+	public int getID(){
+		return getDeviceID();
 	}
-	
-	public double getOutputVoltage(){
-		return talon.getOutputVoltage();
-	}
-	
+		
 	public double getInputVoltage(){
-		return talon.getBusVoltage();
-	}
-	
-	public double getOutputCurrent(){
-		return talon.getOutputCurrent();  
-	}
-	
-	public double getSpeed(){
-		return talon.getSpeed();
+		return getBusVoltage();
 	}
 	
 	public void setReversed(boolean reversed){
-		talon.reverseOutput(reversed);
+		reverseOutput(reversed);
 	}
-	
-	public void setFeedbackDevice(FeedbackDevice device){
-		talon.setFeedbackDevice(device);
-	}
-	
+		
 }
