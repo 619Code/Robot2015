@@ -82,56 +82,25 @@ public class SwerveTest extends IterativeRobot {
      */
     public void autonomousInit(){
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
-    	System.out.println("**************************autonomousInit( )************************************");
-	
-    	//retrieve selected autonomous and run it
-    	//autoSelect.startChoice();
+    	
     }
     /**
      * This function is called when teleop is initialized
      */
     public void teleopInit(){
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
-    	
-    	//sensorThread = new SensorBaseMappingThread(sensorBase, driverStation, 0, threadManager);
-    	//driveThread = new SRXTankDriveMappingThread(driveBase, driverStation, 0, threadManager);
-    	//flapperThread = new FlapperMappingThread(flapper,driverStation,0,threadManager);
-    
-    	//start threads
-    	//sensorThread.start();
-    	//driveThread.start();
-    	//flapperThread.start();
-    	
-    	//start cameras again because they should be killed by threadManager
-    	//sensorBase.startCamera("cam0");
-    	//sensorBase.startNetworkCamera();\	
+	
     }
     /**
      * This function is called periodically (about every 20 ms) during autonomous
      */
     public void autonomousPeriodic() {
-    	//runs the autonomous that was chosen using SmartDashboard (may not need this)
-//    	Scheduler.getInstance().run();
+
     }
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	
-    	//if ( lift1.getPosition( ) >= 393874.0 ) { lift1.set(0); }
-    	//if ( lift1.getPosition( ) <= -250000.0 ) { lift1.set(0); }
-    	// 393874   ----   between level3 & level4
- 
-//    	//flipping override
-//    	if(sensorBase.getAthenaAccelerometer().getZ() > 10){
-//    		
-//    		flapper.setLevel(0);
-//    		
-//    		while(sensorBase.getAthenaAccelerometer().getZ() > 10)
-//    			driveBase.drive(-1);
-//    		
-//    	}
-    	//System.out.println("tPOSITION:  " + lift1.getPosition( ));
     	
     }
     /**
