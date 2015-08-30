@@ -41,9 +41,13 @@ public class SwerveTest extends IterativeRobot {
 	//Hardware
 	TalonCan driveLeft;
 	TalonCan driveRight;
+	TalonCan driveLeft2;
+	TalonCan driveRight2;
 	
 	Talon turnLeft;
 	Talon turnRight;
+	Talon turnLeft2;
+	Talon turnRight2;
 	
 	/**
      * This function is run when the robot is first started up and should be
@@ -68,12 +72,16 @@ public class SwerveTest extends IterativeRobot {
         //CAN
         driveLeft = new TalonCan(1);
         driveRight = new TalonCan(2);
+        driveLeft2 = new TalonCan(3);
+        driveRight2 = new TalonCan(4);
         
-        turnLeft = new Talon(4);
-        turnRight = new Talon(3);
+        turnLeft = new Talon(5);
+        turnRight = new Talon(6);
+        turnLeft2 = new Talon(7);
+        turnRight2 = new Talon(8);
         
         //subsystems
-        driveBase = new SwerveDriveBase(driveLeft, driveRight, turnLeft, turnRight);
+        driveBase = new SwerveDriveBase(1, 2, 3, 4, 5, 6, 7, 8);
         
     }
 
