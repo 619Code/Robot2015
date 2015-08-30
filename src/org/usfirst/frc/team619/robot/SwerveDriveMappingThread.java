@@ -33,32 +33,60 @@ public class SwerveDriveMappingThread extends RobotThread {
     }
 
     protected void cycle() {
-        double leftScalePercent = driverStation.getLeftJoystick().getAxis(Joystick.Axis.AXIS_Z);
+        double scalePercent = driverStation.getLeftJoystick().getAxis(Joystick.Axis.AXIS_Z);
         
-        if(leftScalePercent < 0.2){
-            leftScalePercent = 0.2;
-        }
-
-        double rightPercent = driverStation.getRightJoystick().getAxis(Joystick.Axis.AXIS_Y) * -leftScalePercent;
-        double leftPercent = driverStation.getLeftJoystick().getAxis(Joystick.Axis.AXIS_Y) * leftScalePercent;
-
-        driveBase.getLeftTalon().set(leftPercent);
-        driveBase.getRightTalon().setReversed(true);
-        driveBase.getRightTalon().set(rightPercent);
-        
-        if(driveBase.getLeftTalon2() != null && driveBase.getRightTalon2() != null){
-            driveBase.getLeftTalon2().set(leftPercent);
-            driveBase.getRightTalon2().set(rightPercent);
-            if(DEBUG) System.out.println("[TalonTankDriveMappingThread] Using 2nd motors");
+        if(scalePercent < 0.2){
+            scalePercent = 0.2;
         }
         
-//        double lifts= driverStation.getRightJoystick().getAxis(Joystick.Axis.AXIS_TWIST);
-//	    driveBase.getLiftTalon1().set(lifts);
-//	    driveBase.getLiftTalon2().set(lifts);
-//	    System.out.println("LIFT SPEED:" + lifts);
-       
-        if(DEBUG) {
-            System.out.println("[TalonTankDriveMappingThread] Left Percent: " + leftPercent + " | Right Percent: " + rightPercent );
+        double xAxis = driverStation.getLeftJoystick().getAxis(Joystick.Axis.AXIS_X);
+        double yAxis = driverStation.getLeftJoystick().getAxis(Joystick.Axis.AXIS_Y);
+        //when turning Saitek Aviator Joystick that is the throttle axis as determined using the Joystick Explorer UI developed by FIRST
+        //double xRightAxis = driverStation.getRightJoystick().getAxis(Joystick.Axis.AXIS_X);
+        
+        //gets percentages (numbers from -1 to 1) from the joystick's axes used for driving
+        double drivePercent = yAxis * scalePercent;
+        //double spinPercent = xRightAxis * scalePercent;
+        double turnPercent = xAxis * scalePercent;
+        
+        
+        //
+        //TODO: figure out logic regarding each wheel when rotating
+        //double leftPercent = spinPercent;
+        //double rightPercent = spinPercent;
+        //double leftPercent2 = spinPercent;
+        //double rightPercent2 = spinPercent;
+        
+        try {
+            if(xAxis > -0.2 && xAxis < 0.2 && yAxis > -0.2 && yAxis < 0.2){
+                driveBase.getLeftTalon().set(0);
+                driveBase.getRightTalon().set(0);
+                driveBase.getLeftTalon2().set(0);
+                driveBase.getRightTalon2().set(0);
+                driveBase.getLeftTurn().set(0);
+                driveBase.getRightTurn().set(0);
+                driveBase.getLeftTurn2().set(0);
+                driveBase.getRightTurn2().set(0);
+            }else{
+                driveBase.getLeftTalon().set(drivePercent);
+                driveBase.getRightTalon().set(-drivePercent);
+                driveBase.getLeftTalon2().set(drivePercent);
+                driveBase.getRightTalon2().set(-drivePercent);
+                driveBase.getLeftTurn().set(turnPercent);
+                driveBase.getRightTurn().set(-turnPercent);
+                driveBase.getLeftTurn2().set(turnPercent);
+                driveBase.getRightTurn2().set(-turnPercent);
+            }
+        } catch (Exception e) {
+            if (firstError || DEBUG) {
+                e.printStackTrace();
+            }
         }
+        
+        if(DEBUG){
+        //Write debug code    
+        }
+            
     }
+
 }
