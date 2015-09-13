@@ -77,6 +77,29 @@ public class SwerveDriveMappingThread extends RobotThread {
                 driveBase.getLeftTurn2().set(turnPercent);
                 driveBase.getRightTurn2().set(-turnPercent);
             }
+        
+            //Orientation
+            //0-----1 ^
+            //|     | |
+            //|     |
+            //2-----3
+            
+            if(driverStation.getLeftJoystick().getButton(Joystick.Button.BUTTON5)){
+                driveBase.getLeftTurn().set(turnPercent * 0.25);
+            }
+            
+            if(driverStation.getLeftJoystick().getButton(Joystick.Button.BUTTON6)){
+                driveBase.getRightTurn().set(turnPercent * 0.25);
+            }
+            
+            if(driverStation.getLeftJoystick().getButton(Joystick.Button.BUTTON7)){
+                driveBase.getLeftTurn2().set(turnPercent * 0.25);
+            }
+            
+            if(driverStation.getLeftJoystick().getButton(Joystick.Button.BUTTON8)){
+                driveBase.getRightTurn2().set(turnPercent * 0.25);
+            }
+            
         } catch (Exception e) {
             if (firstError || DEBUG) {
                 e.printStackTrace();
