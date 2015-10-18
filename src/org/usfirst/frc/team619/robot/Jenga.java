@@ -134,10 +134,8 @@ public class Jenga extends IterativeRobot {
         //CAN
         driveLeft = new TalonCan(1);
         driveRight = new TalonCan(2);
-        
         lift1 = new TalonCan(4);      // <<<-------[[[ talon 4 has the encoder connected to it
         lift2 = new TalonCan(3);
-        
         wheelLeft = new TalonCan(5);
         wheelRight = new TalonCan(6);
         
@@ -148,7 +146,7 @@ public class Jenga extends IterativeRobot {
         sensorBase.addUltrasonicSensor(frontLeftSonic);
         sensorBase.addUltrasonicSensor(frontRightSonic);
         driveBase = new SRXDriveBase(driveLeft, driveRight);
-        flapper = new Flapper(lift1, lift2, hands, bottom, levelOne, levelTwo, levelThree, top, wheelLeft, wheelRight);
+        flapper = new Flapper(lift1, lift2, wheelLeft, wheelRight, hands, bottom, levelOne, levelTwo, levelThree, top);
         
         
         //SmartDashboard setup (all things dealing with the SmartDashboard initialized here)
@@ -185,8 +183,8 @@ public class Jenga extends IterativeRobot {
     	//autoSelect.startChoice();
     	
     	//start cameras
-    	sensorBase.startCamera("cam0");
-    	sensorBase.startNetworkCamera();
+    	//sensorBase.startCamera("cam0");
+    	//sensorBase.startNetworkCamera();
     }
     /**
      * This function is called when teleop is initialized
@@ -195,16 +193,16 @@ public class Jenga extends IterativeRobot {
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
     	
     	sensorThread = new SensorBaseMappingThread(sensorBase, driverStation, 0, threadManager);
-    	//driveThread = new SRXTankDriveMappingThread(driveBase, driverStation, 0, threadManager);
+    	driveThread = new SRXTankDriveMappingThread(driveBase, driverStation, 0, threadManager);
     	flapperThread = new FlapperMappingThread(flapper,driverStation,0,threadManager);
     
     	//start threads
     	sensorThread.start();
-    	//driveThread.start();
+    	driveThread.start();
     	flapperThread.start();
     	
     	//start cameras again because they should be killed by threadManager
-    	sensorBase.startCamera("cam0");
+    	//sensorBase.startCamera("cam0");
     	//sensorBase.startNetworkCamera();\
     	
     }
@@ -252,10 +250,10 @@ public class Jenga extends IterativeRobot {
     	SmartDashboard.putBoolean("Level 2", flapper.levelTwoSwitchValue());
     	SmartDashboard.putBoolean("Level 1", flapper.levelOneSwitchValue());
     	SmartDashboard.putBoolean("Bottom Switch", flapper.bottomSwitchValue());
-    	SmartDashboard.putNumber("Intake", flapper.getIntake());
+//    	SmartDashboard.putNumber("Intake", driveBase.getIntake());
     	
     	//display status of camera
-    	SmartDashboard.putBoolean("Upper Camera On", sensorBase.getCamera().isOn());
+    	//SmartDashboard.putBoolean("Upper Camera On", sensorBase.getCamera().isOn());
     	
     }
     /**
