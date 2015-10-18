@@ -16,6 +16,7 @@ import org.usfirst.frc.team619.subsystems.DriverStation;
 import org.usfirst.frc.team619.subsystems.drive.SwerveDriveBase;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,16 +39,16 @@ public class SwerveTest extends IterativeRobot {
 	//Subsystems
 	SwerveDriveBase driveBase;
 	
-	//Hardware
-	TalonCan driveLeft;
-	TalonCan driveRight;
-	TalonCan driveLeft2;
-	TalonCan driveRight2;
+	//Hardware	
+	TalonCan turnLeft;
+	TalonCan turnRight;
+	TalonCan turnLeft2;
+	TalonCan turnRight2;
 	
-	Talon turnLeft;
-	Talon turnRight;
-	Talon turnLeft2;
-	Talon turnRight2;
+	Talon driveLeft;
+	Talon driveRight;
+	Talon driveLeft2;
+	Talon driveRight2;
 	
 	/**
      * This function is run when the robot is first started up and should be
@@ -69,20 +70,20 @@ public class SwerveTest extends IterativeRobot {
         //driver station
         driverStation = new DriverStation(1, 2);
         
-        //CAN
-        driveLeft = new TalonCan(1);
-        driveRight = new TalonCan(2);
-        driveLeft2 = new TalonCan(3);
-        driveRight2 = new TalonCan(4);
+        //TalonCan        
+        turnLeft = new TalonCan(1);
+        turnRight = new TalonCan(2);
+        turnLeft2 = new TalonCan(3);
+        turnRight2 = new TalonCan(4);
         
-        turnLeft = new Talon(5);
-        turnRight = new Talon(6);
-        turnLeft2 = new Talon(7);
-        turnRight2 = new Talon(8);
+        //Talon
+        driveLeft = new Talon(0);
+        driveRight = new Talon(1);
+        driveLeft2 = new Talon(2);
+        driveRight2 = new Talon(3);
         
         //subsystems
-        driveBase = new SwerveDriveBase(1, 2, 3, 4, 5, 6, 7, 8);
-        
+        driveBase = new SwerveDriveBase(driveLeft, driveRight, driveLeft2, driveRight2);
     }
 
     /**
@@ -90,7 +91,15 @@ public class SwerveTest extends IterativeRobot {
      */
     public void autonomousInit(){
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
-    	
+    	turnLeft.set(0.25);
+    	turnRight.set(0.25);
+    	turnLeft2.set(0.25);
+    	turnRight2.set(0.25);
+    	driveLeft.set(0.25);
+    	driveRight.set(0.25);
+    	driveLeft.set(0.25);
+    	driveRight2.set(0.25);
+    	driveLeft2.set(0.25);
     }
     /**
      * This function is called when teleop is initialized
@@ -98,19 +107,28 @@ public class SwerveTest extends IterativeRobot {
     public void teleopInit(){
     	threadManager.killAllThreads(); // DO NOT EVER REMOVE!!!
 	
+        //driveThread = new TurnDriveMappingThread(driveBase, driverStation, 15, threadManager);
+        //driveThread.start(); 
     }
     /**
      * This function is called periodically (about every 20 ms) during autonomous
      */
-    public void autonomousPeriodic() {
+    public void autonomousPeriodic(){
 
     }
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	
-    }
+//        SmartDashboard.putNumber("FLTurn: ", driveBase.getLeftTurn().getSpeed());
+//        SmartDashboard.putNumber("FRTurn: ", driveBase.getRightTurn().getSpeed());
+//        SmartDashboard.putNumber("BLTurn: ", driveBase.getLeftTurn2().getSpeed());
+//        SmartDashboard.putNumber("BRTurn: ", driveBase.getRightTurn2().getSpeed());
+/*        SmartDashboard.putNumber("FL: ", driveBase.getLeftTalon().getSpeed());
+        SmartDashboard.putNumber("FR: ", driveBase.getRightTalon().getSpeed());
+        SmartDashboard.putNumber("BL: ", driveBase.getLeftTalon2().getSpeed());
+        SmartDashboard.putNumber("BR: ", driveBase.getRightTalon2().getSpeed());
+*/    }
     /**
      * This function is called periodically during test mode
      */
