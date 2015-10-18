@@ -33,17 +33,24 @@ public class FlapperMappingThread extends RobotThread{
 		
 		double scalePercent = driverStation.getFourthJoystick().getAxis(Joystick.Axis.AXIS_Z);
 		double yAxis = driverStation.getFourthJoystick().getAxis(Joystick.Axis.AXIS_Y);
+		double scalePercent2 = driverStation.getThirdJoystick().getAxis(Joystick.Axis.AXIS_Z);
 		
-		if(scalePercent < 0.3)
-			scalePercent = 0.3;
+		if(scalePercent < 0.2){
+			scalePercent = 0.2;
+		}
+		if(scalePercent2 < 0.2){
+			scalePercent = 0.2;
+		}
 		
 		double liftSpeed = yAxis * scalePercent;
 		
-		//Button 2 (red button on saitek aviators) enables the intake wheels
 		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON2)){
-			flapper.setIntake();
+			flapper.setIntake(scalePercent2);
+		}else if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON4)){
+			flapper.setOuttake(scalePercent2);
 		}else
 			flapper.stopIntake();
+        
 		
 		//Button 3 (main thumb button on saitek aviators) returns lift to its lowest point
 		if(driverStation.getThirdJoystick().getButton(Joystick.Button.BUTTON3)){
