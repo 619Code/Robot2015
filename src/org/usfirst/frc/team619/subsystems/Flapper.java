@@ -2,7 +2,6 @@ package org.usfirst.frc.team619.subsystems;
 
 import org.usfirst.frc.team619.hardware.DualInputSolenoid;
 import org.usfirst.frc.team619.hardware.LimitSwitch;
-import org.usfirst.frc.team619.hardware.Solenoid;
 import org.usfirst.frc.team619.hardware.TalonCan;
 
 import edu.wpi.first.wpilibj.CANTalon;
@@ -20,8 +19,9 @@ public class Flapper {
 	
 	private TalonCan lift1;
 	private TalonCan lift2;
-	private TalonCan intakeLeft;
-	private TalonCan intakeRight;
+	
+	private TalonCan leftIntake;
+	private TalonCan rightIntake;
 	
 	private DualInputSolenoid hands;
 	
@@ -33,12 +33,12 @@ public class Flapper {
 	
 	
 	
-	public Flapper(TalonCan lift1, TalonCan lift2, DualInputSolenoid hands, LimitSwitch bottomSwitch, LimitSwitch levelOneSwitch, LimitSwitch levelTwoSwitch, LimitSwitch levelThreeSwitch,
-				LimitSwitch topSwitch, TalonCan intakeLeft, TalonCan intakeRight){
+	public Flapper(TalonCan lift1, TalonCan lift2, TalonCan leftIntake, TalonCan rightIntake, DualInputSolenoid hands, LimitSwitch bottomSwitch, LimitSwitch levelOneSwitch, LimitSwitch levelTwoSwitch, LimitSwitch levelThreeSwitch,
+				LimitSwitch topSwitch){
 		this.lift1 = lift1;
 		this.lift2 = lift2;
-		this.intakeLeft = intakeLeft;
-		this.intakeRight = intakeRight;
+		this.leftIntake = leftIntake;
+		this.rightIntake = rightIntake;
 		this.hands = hands;
 		this.bottomSwitch = bottomSwitch;
 		this.levelOneSwitch = levelOneSwitch;
@@ -62,9 +62,33 @@ public class Flapper {
 		//lift1.setReverseSoftLimit(-9900);
 		
 	}
-	
+    
+    public TalonCan getLeftIntake(){
+        return leftIntake;
+    }//end Talon getLeftTalon2
+    
+    public TalonCan getRightIntake(){
+        return rightIntake;
+    }//end Talon getRightTalon2
+    
+
 	public double getIntake(){
-		return intakeRight.get();
+		return rightIntake.get();
+	}
+    
+	public void stopIntake(){
+		leftIntake.set(0);
+		rightIntake.set(0);
+	}
+	
+	public void setIntake(double scalePercent2){
+		leftIntake.set(scalePercent2);
+		rightIntake.set(-scalePercent2);
+	}
+	
+	public void setOuttake(double scalePercent2){
+		leftIntake.set(-scalePercent2);
+		rightIntake.set(scalePercent2);
 	}
 
 	public boolean bottomSwitchValue(){
@@ -90,17 +114,7 @@ public class Flapper {
 	public void setLiftSpeed(double speed){
 		lift1.set(speed);
 	}
-	
-	public void setIntake(){
-		intakeLeft.set(0.2);
-		intakeRight.set(0.2);
-	}
-	
-	public void stopIntake(){
-		intakeLeft.set(0);
-		intakeRight.set(0);
-	}
-	
+
 	public void setLevel(int level){
 		
 //		if(level == lastSwitch)
